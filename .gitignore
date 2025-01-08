@@ -30,3 +30,4 @@
 *.exe
 *.out
 *.app
+/NeuronLabStudyPro2/lib_MNIST_edit.txt
