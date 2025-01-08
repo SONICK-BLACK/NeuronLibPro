@@ -31,3 +31,4 @@
 *.out
 *.app
 /NeuronLabStudyPro2/lib_MNIST_edit.txt
+/.vs/NeuronLabStudyPro2
