@@ -41,12 +41,12 @@ int main()
     ReadFile("lib_MNIST_edit.txt", data, pixel, 10);
 
     int val = 3;
-    const ActFuns Funns[] = { ReLU,Sigmoida};
+    const ActFuns Funns[] = { ReLU,Softmax};
     const int ArrSize[] = { pixel,256,10};
 
     Tensor T(3, ArrSize, Funns);
 
-  T.StartTeachSession(0.001, 1, data, MSR, 10);
+  T.StartTeachSession(0.001, 1, data, MSR, 10,Adam,L1);
 
 
 

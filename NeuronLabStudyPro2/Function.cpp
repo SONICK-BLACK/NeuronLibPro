@@ -1,5 +1,5 @@
 #include "Function.h"
-#include "Function.h"
+
 
 void Function::FunctionUse(ActFuns set, double& value, double MidValue) {
 

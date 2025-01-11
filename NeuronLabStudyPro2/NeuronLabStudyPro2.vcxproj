@@ -138,6 +138,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BiosClass.h" />
+    <ClInclude Include="DataHyperParametr.h" />
     <ClInclude Include="DataNeuron.h" />
     <ClInclude Include="Function.h" />
     <ClInclude Include="NeuronClass.h" />
