@@ -46,7 +46,7 @@ int main()
 
     Tensor T(3, ArrSize, Funns);
 
-  T.StartTeachSession(0.001, 1, data, MSR, 10,Adam,L1);
+  T.StartTeachSession(0.001, 1, data, MSR, 10,rmsprop,NullR);
 
 
 

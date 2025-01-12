@@ -24,6 +24,8 @@ void Function::FunctionUse(ActFuns set, double& value, double MidValue) {
 
 
 		break;
+	case HypTang:
+		value = (exp(2 * value) - 1) / (exp(2 * value) + 1);
 	default:
 		break;
 	}
@@ -56,6 +58,8 @@ double Function::FunctionUseDer(ActFuns set, double value, double MidValue) {
 			return ((exp(value) * MidValue - pow(exp(value), 2)) / pow(MidValue, 2));
 		}
 		break;
+	case HypTang:
+		return 1/pow((exp(value)+ exp(-value))/2,2);
 	default:
 		break;
 	}

@@ -1,9 +1,9 @@
 #pragma once
 #include<iostream>
 enum OptimizaterGradient { NullO = 0, Momentum=1, rmsprop, Adam};
-enum Regulizators { NullR = 0, L1=1, L2};
+enum Regulizators { NullR = 0, L1=1, L2, ElasticNet};
 enum ActFuns {
-	Sigmoida = 1, ReLU = 2, Softmax = 3
+	Sigmoida = 1, ReLU = 2, Softmax = 3, HypTang
 };
 enum ErrFuns
 {

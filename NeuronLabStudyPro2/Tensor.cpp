@@ -202,13 +202,13 @@ void Tensor::StartGradient(int PacketSet, double SpeedTeach, Regulizators reguli
 /*??*/	if (regulizator == L1) {
 		for (int i = 0; i < SizeValSloy - 1; i++) {
 			for (int j = 0; j < MatrixWheight[i].sizeMatrix; j++) {
-				MatrixWheight[i].Wheight[j] = MatrixWheight[i].Wheight[j] - MatrixWheight[i].SetErrorWhPacket[j] * SpeedTeach / PacketSet -(SpeedTeach * HYpPar.hOptim) / (PacketSet * SizeObservations);
+				MatrixWheight[i].Wheight[j] = MatrixWheight[i].Wheight[j] - MatrixWheight[i].SetErrorWhPacket[j] * SpeedTeach / PacketSet -(SpeedTeach * HYpPar.hOptim1) / (PacketSet * SizeObservations);
 
 
 			}
 			for (int j = 0; j < MatrixBios[i].SizeMatrix; j++) {
 
-				MatrixBios[i].Bios[j] = MatrixBios[i].Bios[j] - MatrixBios[i].SetErrorBiosPacket[j] * SpeedTeach / PacketSet-(SpeedTeach * HYpPar.hOptim) / (PacketSet * SizeObservations);
+				MatrixBios[i].Bios[j] = MatrixBios[i].Bios[j] - MatrixBios[i].SetErrorBiosPacket[j] * SpeedTeach / PacketSet-(SpeedTeach * HYpPar.hOptim1) / (PacketSet * SizeObservations);
 			}
 		}
 	}			
@@ -216,21 +216,113 @@ void Tensor::StartGradient(int PacketSet, double SpeedTeach, Regulizators reguli
 
 		for (int i = 0; i < SizeValSloy - 1; i++) {
 			for (int j = 0; j < MatrixWheight[i].sizeMatrix; j++) {
-				MatrixWheight[i].Wheight[j] = (1- (SpeedTeach*HYpPar.hOptim) / (PacketSet* SizeObservations))*MatrixWheight[i].Wheight[j] - MatrixWheight[i].SetErrorWhPacket[j] * SpeedTeach / PacketSet;
+				MatrixWheight[i].Wheight[j] = (1- (SpeedTeach*HYpPar.hOptim2) / (PacketSet* SizeObservations))*MatrixWheight[i].Wheight[j] - MatrixWheight[i].SetErrorWhPacket[j] * SpeedTeach / PacketSet;
 
 
 			}
 			for (int j = 0; j < MatrixBios[i].SizeMatrix; j++) {
-				MatrixBios[i].Bios[j] = (1 - (SpeedTeach * HYpPar.hOptim) / (PacketSet * SizeObservations))* MatrixBios[i].Bios[j] - MatrixBios[i].SetErrorBiosPacket[j] * SpeedTeach / PacketSet;
+				MatrixBios[i].Bios[j] = (1 - (SpeedTeach * HYpPar.hOptim2) / (PacketSet * SizeObservations))* MatrixBios[i].Bios[j] - MatrixBios[i].SetErrorBiosPacket[j] * SpeedTeach / PacketSet;
 			}
 		}
 
 		
 	}
+
+	if (regulizator == ElasticNet) {
+
+		for (int i = 0; i < SizeValSloy - 1; i++) {
+			for (int j = 0; j < MatrixWheight[i].sizeMatrix; j++) {
+				MatrixWheight[i].Wheight[j] = (1 - (SpeedTeach * HYpPar.hOptim2) / (PacketSet * SizeObservations)) * MatrixWheight[i].Wheight[j] - MatrixWheight[i].SetErrorWhPacket[j] * SpeedTeach / PacketSet - (SpeedTeach * HYpPar.hOptim1) / (PacketSet * SizeObservations);;
+
+
+			}
+			for (int j = 0; j < MatrixBios[i].SizeMatrix; j++) {
+				MatrixBios[i].Bios[j] = (1 - (SpeedTeach * HYpPar.hOptim2) / (PacketSet * SizeObservations)) * MatrixBios[i].Bios[j] - MatrixBios[i].SetErrorBiosPacket[j] * SpeedTeach / PacketSet - (SpeedTeach * HYpPar.hOptim1) / (PacketSet * SizeObservations);;
+			}
+		}
+
+
+	}
 	for (int i = 0; i < SizeValSloy - 1; i++) {
 		MatrixWheight[i].WheightErrSetNull();
 		MatrixBios[i].BiosErrSetNull();
 	}
+}
+void Tensor::StartTeachSession(double SpeedTeach, int PacketSet, DataNeuron& Data, ErrFuns FunErr, int epoch, OptimizaterGradient Optimizator, Regulizators regulizator, bool StochasticSpeed) {
+	for (int i = 0; i < SizeValSloy; i++) {
+		MatrixNeuron[i].InitNeuronClassErr();
+
+	}
+	for (int i = 0; i < SizeValSloy - 1; i++) {
+		MatrixWheight[i].InitWheightErr();
+		MatrixBios[i].InitErrBios();
+	}
+	int SetFlagPacket = 0;
+	double Val = 0;
+	for (int h = 0; h < epoch; h++) {
+		for (int j = 0; j < Data.SizeData; j++) {
+
+			LoadData(Data.SetData[j]);
+			StartDirect();
+			/////.....
+	//	cout << "ttttttttt "<<endl;
+		//		for (int u = 0; u < 10; u++) {
+				//	cout << MatrixNeuron[SizeValSloy - 1].Neuron[u] << "  ";
+		//	}
+
+		//	cout << " ttttttttt " << endl;
+				//////////
+
+
+			if (!SetCorrectVal(Data.CorrectVal[j], Val)) {
+
+				if (Optimizator != NullO) {
+					StartTrainingSet(Data.CorrectVal[j], FunErr, Optimizator);
+				}
+				else {
+					StartTrainingSet(Data.CorrectVal[j], FunErr);
+				}
+			}
+			SetFlagPacket += 1;
+
+
+			if (SetFlagPacket == PacketSet) {
+
+				if (regulizator != NullR) {
+					if(StochasticSpeed){
+						StartGradient(PacketSet, SpeedTeach * exp(-h / 20.0), regulizator, Data.SizeData);
+					}
+					else {
+						StartGradient(PacketSet, SpeedTeach, regulizator, Data.SizeData);
+					}
+				}
+				else {
+					if (StochasticSpeed) {
+						StartGradient(PacketSet, SpeedTeach * exp(-h / 20.0));
+					}
+					else {
+						StartGradient(PacketSet, SpeedTeach);
+					}
+				}
+
+				SetFlagPacket = 0;
+
+
+			}
+			for (int i = 0; i < SizeValSloy; i++) {
+				MatrixNeuron[i].NeuronSetNull();
+			}
+
+		}
+		SetFlagPacket = 0;
+		cout << endl;
+		cout << "Epoch (" << h << "): " << (Val / Data.SizeData) * 100 << "%" << "\n";
+
+
+		Val = 0;
+	}
+	cout << endl;
+	cout << "End Teach Tensor\n";
 }
 
 
