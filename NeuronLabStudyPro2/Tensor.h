@@ -21,6 +21,7 @@ using namespace std;
 		ActFuns* act;
 		int SizeValSloy;
 		void StartDirect();
+		void StartDirectBase();
 		void LoadData(double* Data);
 		void StartTrainingSet(double* VectorRight, ErrFuns erF);
 		void StartTrainingSet(double* VectorRight, ErrFuns erF, OptimizaterGradient Optimizator);
@@ -33,12 +34,13 @@ using namespace std;
 	
 
 		Tensor(int VallSloy, const int ArrSizeSloy[], const ActFuns ActFunc[]); //Standart Pepzetron;
-		void SaveParametsNeurons(string pathW, string pathB);
-		void LoadParametsNeurons(string pathW, string pathB);
+		void SaveParametsNeurons(string pathW = "wheight.txt", string pathB = "bios.txt");
+		void LoadParametsNeurons(string pathW = "wheight.txt", string pathB = "bios.txt");
 		void StartTeachSession(double SpeedTeach, int PacketSet, DataNeuron& Data, ErrFuns FunErr, int epoch);
 		void StartTeachSession(double SpeedTeach, int PacketSet, DataNeuron& Data, ErrFuns FunErr, int epoch, OptimizaterGradient Optimizator, Regulizators regulizator);
 		void StartTeachSession(double SpeedTeach, int PacketSet, DataNeuron& Data, ErrFuns FunErr, int epoch, OptimizaterGradient Optimizator, Regulizators regulizator, bool StochasticSpeed);
-		void StartDirectSession(DataNeuron& Data);
+		void StartDirectSession(DataNeuron& Data, void (*set_function)(double* setNeuron));
+		void StartDirectSession(DataNeuron& Data, void (*set_function)(double* setNeuron, double* SetCorectVal));
 
 		~Tensor();
 

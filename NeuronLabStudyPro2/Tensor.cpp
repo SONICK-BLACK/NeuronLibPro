@@ -29,6 +29,12 @@ void Tensor::StartDirect() {
 		TasksNetwork::DirectDirection(MatrixNeuron[i - 1], MatrixNeuron[i], MatrixWheight[i - 1], MatrixBios[i - 1], act[i - 1]);
 	}
 }
+void Tensor::StartDirectBase() {
+	///Verno
+	for (int i = 1; i < SizeValSloy; i++) {
+		TasksNetwork::DirectDirectionBase(MatrixNeuron[i - 1], MatrixNeuron[i], MatrixWheight[i - 1], MatrixBios[i - 1], act[i - 1]);
+	}
+}
 void Tensor::LoadData(double* Data) {
 	for (int i = 0; i < MatrixNeuron[0].sizeMatrix; i++)
 		MatrixNeuron[0].Neuron[i] = Data[i];
@@ -324,7 +330,7 @@ void Tensor::StartTeachSession(double SpeedTeach, int PacketSet, DataNeuron& Dat
 	cout << endl;
 	cout << "End Teach Tensor\n";
 }
-void Tensor::SaveParametsNeurons(string pathW="wheight.txt", string pathB = "bios.txt") {
+void Tensor::SaveParametsNeurons(string pathW, string pathB) {
 	ofstream outW;
 	outW.open(pathW);
 	ofstream outB;
@@ -345,7 +351,7 @@ void Tensor::SaveParametsNeurons(string pathW="wheight.txt", string pathB = "bio
 	cout << endl;
 	cout << "End Save Paramets";
 }
-void Tensor::LoadParametsNeurons(string pathW = "wheight.txt", string pathB = "bios.txt") {
+void Tensor::LoadParametsNeurons(string pathW , string pathB) {
 	fstream outW;
 	fstream outB;
 	outW.open(pathW);
@@ -374,10 +380,21 @@ void Tensor::LoadParametsNeurons(string pathW = "wheight.txt", string pathB = "b
 	cout << endl;
 	cout << "End load Paramets";
 }
-void Tensor::StartDirectSession(DataNeuron& Data) {
+void Tensor::StartDirectSession(DataNeuron& Data, void (*set_function)(double* setNeuron)) {
 	for (int j = 0; j < Data.SizeData; j++) {
 		LoadData(Data.SetData[j]);
 		StartDirect();
+		set_function(MatrixNeuron[SizeValSloy - 1].Neuron);
+		for (int i = 0; i < SizeValSloy; i++) {
+			MatrixNeuron[i].NeuronSetNull();
+		}
+	}
+}
+void Tensor::StartDirectSession(DataNeuron& Data, void (*set_function)(double* setNeuron, double* SetCorectVal)) {
+	for (int j = 0; j < Data.SizeData; j++) {
+		LoadData(Data.SetData[j]);
+		StartDirectBase();
+		set_function(MatrixNeuron[SizeValSloy - 1].Neuron,Data.CorrectVal[j]);
 		for (int i = 0; i < SizeValSloy; i++) {
 			MatrixNeuron[i].NeuronSetNull();
 		}

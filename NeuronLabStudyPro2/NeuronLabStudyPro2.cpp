@@ -32,23 +32,61 @@ void ReadFile(string path, DataNeuron& dat, int Pixel, int InputSize) {
     out.close();
 }
 
+void OutputData(double* OutNeuron, double* CorrectVal) {
+    int CorectNumber;
+    for (int i = 0; i < 10; i++) {
+        if (CorrectVal[i] == 1.0) {
+            CorectNumber = i;
+            break;
+        }
+    }
+    cout << endl;
+    cout << "Corect Number: " << CorectNumber<<"\n";
+    for (int i = 0; i < 10; i++) {
+        cout << "( " << i << " ) [ " << OutNeuron[i] << " ]" << "  ";
+    }
+}
 int main()
 {
-    int NumberCol = 1000;
-    int pixel = 784;
-     DataNeuron data(NumberCol, pixel, 10);
+    int t;
+    cout << "Begin Study Network Neurons? If zero, load Paramets Neurons Network and Test (1/0)\n";
+    cin >> t;
+    if (t) {
+        int NumberCol = 1000;
+        int pixel = 784;
+        DataNeuron data(NumberCol, pixel, 10);
 
-    ReadFile("lib_MNIST_edit.txt", data, pixel, 10);
+        ReadFile("lib_MNIST_edit.txt", data, pixel, 10);
 
-    int val = 3;
-    const ActFuns Funns[] = { ReLU,Softmax};
-    const int ArrSize[] = { pixel,256,10};
+        int val = 3;
+        const ActFuns Funns[] = { ReLU,Softmax };
+        const int ArrSize[] = { pixel,256,10 };
 
-    Tensor T(3, ArrSize, Funns);
+        Tensor T(3, ArrSize, Funns);
 
-  T.StartTeachSession(0.001, 1, data, MSR, 10,rmsprop,NullR);
+        T.StartTeachSession(0.001, 1, data, MSR, 10, rmsprop, NullR);
+        cout << endl;
+        cout << "Save Paramets? (1/0)\n";
+        cin >> t;
+        if (t) {
+            T.SaveParametsNeurons();
+        }
+
+    }
+    else {
+        int TestNumber = 10000;
+        int pixel = 784;
+        DataNeuron dataTest(TestNumber, pixel, 10);
+        ReadFile("lib_10k.txt", dataTest, pixel, 10);
+    
+        const ActFuns Funns[] = { ReLU,Softmax };
+        const int ArrSize[] = { pixel,256,10 };
+        Tensor T(3, ArrSize, Funns);
+        T.LoadParametsNeurons();
+        T.StartDirectSession(dataTest, OutputData);
 
 
+    }
 
 
 

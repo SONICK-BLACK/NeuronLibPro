@@ -33,6 +33,39 @@ void TasksNetwork::DirectDirection(NeuronClass& Neuron1, NeuronClass& Neuron2, W
 
 	
 }
+void TasksNetwork::DirectDirectionBase(NeuronClass& Neuron1, NeuronClass& Neuron2, WheightClass& Wheight, BiosClass& Bios, ActFuns& funs) {
+	int k = 0;
+	for (int i = 0; i < Neuron1.sizeMatrix; i++) {
+		for (int u = 0; u < Neuron2.sizeMatrix; u++) {
+			Neuron2.Neuron[u] += Neuron1.Neuron[i] * Wheight.Wheight[k];
+			
+			k += 1;
+		}
+	}
+	for (int u = 0; u < Neuron2.sizeMatrix; u++) {
+		Neuron2.Neuron[u] += Bios.Bios[u];
+	
+	}
+	if (funs != Softmax) {
+		for (int u = 0; u < Neuron2.sizeMatrix; u++) {
+
+			Function::FunctionUse(funs, Neuron2.Neuron[u]);
+		}
+	}
+	else {
+		double valMid = 0;
+		for (int i = 0; i < Neuron2.sizeMatrix; i++) {
+			valMid += exp(Neuron2.Neuron[i]);
+
+		}
+		for (int u = 0; u < Neuron2.sizeMatrix; u++) {
+
+			Function::FunctionUse(funs, Neuron2.Neuron[u], valMid);
+		}
+	}
+
+
+}
 void  TasksNetwork::EvalutionError(double* VectorRight, NeuronClass& NeuronEnd, ErrFuns errFuns) {
 	for (int i = 0; i < NeuronEnd.sizeMatrix; i++) {
 		NeuronEnd.NeuronErr[i]= Function::FunctionUseErDer(errFuns, NeuronEnd.Neuron[i], VectorRight[i]);

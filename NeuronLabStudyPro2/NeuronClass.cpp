@@ -29,8 +29,10 @@ void NeuronClass:: NeuronSetNull() {
 	for (int i = 0; i < sizeMatrix; i++) {
 		Neuron[i] = 0;
 	}
-	for (int i = 0; i < sizeMatrix; i++) {
-		NoActivateNeuron[i] = 0;
+	if (NeuronErr != 0) {
+		for (int i = 0; i < sizeMatrix; i++) {
+			NoActivateNeuron[i] = 0;
+		}
 	}
 }
 NeuronClass::~NeuronClass() {
