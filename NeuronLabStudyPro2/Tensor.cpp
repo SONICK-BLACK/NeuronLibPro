@@ -324,8 +324,65 @@ void Tensor::StartTeachSession(double SpeedTeach, int PacketSet, DataNeuron& Dat
 	cout << endl;
 	cout << "End Teach Tensor\n";
 }
+void Tensor::SaveParametsNeurons(string pathW="wheight.txt", string pathB = "bios.txt") {
+	ofstream outW;
+	outW.open(pathW);
+	ofstream outB;
+	outB.open(pathB);
+	for (int i = 0; i < SizeValSloy - 1; i++) {
+		for (int j = 0; j < MatrixWheight[i].sizeMatrix; j++) {
+			outW << MatrixWheight[i].Wheight[j]<<"\n";
 
 
+		}
+		for (int j = 0; j < MatrixBios[i].SizeMatrix; j++) {
+
+			outB << MatrixBios[i].Bios[j] << "\n";
+		}
+	}
+	outW.close();
+	outB.close();
+	cout << endl;
+	cout << "End Save Paramets";
+}
+void Tensor::LoadParametsNeurons(string pathW = "wheight.txt", string pathB = "bios.txt") {
+	fstream outW;
+	fstream outB;
+	outW.open(pathW);
+	outB.open(pathW);
+	if (!outW.is_open()) {
+		cout << endl;
+		cout << "Error open File...";
+	}
+	if (!outB.is_open()) {
+		cout << endl;
+		cout << "Error open File...";
+	}
+	for (int i = 0; i < SizeValSloy - 1; i++) {
+		for (int j = 0; j < MatrixWheight[i].sizeMatrix; j++) {
+			outW >> MatrixWheight[i].Wheight[j];
+
+
+		}
+		for (int j = 0; j < MatrixBios[i].SizeMatrix; j++) {
+
+			outB >> MatrixBios[i].Bios[j];
+		}
+	}
+	outW.close();
+	outB.close();
+	cout << endl;
+	cout << "End load Paramets";
+}
+void Tensor::StartDirectSession(DataNeuron& Data) {
+	for (int j = 0; j < Data.SizeData; j++) {
+		LoadData(Data.SetData[j]);
+		StartDirect();
+		for (int i = 0; i < SizeValSloy; i++) {
+			MatrixNeuron[i].NeuronSetNull();
+		}
+	}
+}
 bool Tensor::SetCorrectVal(double* SetCorrect, double& val) {
 
 

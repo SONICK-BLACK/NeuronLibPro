@@ -7,6 +7,7 @@
 #include"DataNeuron.h"
 #include"DataHyperParametr.h"
 #include<iostream>
+#include<fstream>
 using namespace std;
 
 
@@ -32,11 +33,12 @@ using namespace std;
 	
 
 		Tensor(int VallSloy, const int ArrSizeSloy[], const ActFuns ActFunc[]); //Standart Pepzetron;
-
+		void SaveParametsNeurons(string pathW, string pathB);
+		void LoadParametsNeurons(string pathW, string pathB);
 		void StartTeachSession(double SpeedTeach, int PacketSet, DataNeuron& Data, ErrFuns FunErr, int epoch);
 		void StartTeachSession(double SpeedTeach, int PacketSet, DataNeuron& Data, ErrFuns FunErr, int epoch, OptimizaterGradient Optimizator, Regulizators regulizator);
 		void StartTeachSession(double SpeedTeach, int PacketSet, DataNeuron& Data, ErrFuns FunErr, int epoch, OptimizaterGradient Optimizator, Regulizators regulizator, bool StochasticSpeed);
-	
+		void StartDirectSession(DataNeuron& Data);
 
 		~Tensor();
 

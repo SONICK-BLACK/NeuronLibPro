@@ -12,13 +12,18 @@ DataNeuron::DataNeuron(int SizeDat, int SizeData2, int SizeDataVal) {
 
 	}
 }
-DataNeuron::~DataNeuron() {
-	for (int i = 0; i < DataNeuron::SizeData; i++) {
-		delete[] DataNeuron::SetData[i];
-		delete[] DataNeuron::CorrectVal[i];
 
-	}
-	delete[] DataNeuron::SetData;
-	delete[] DataNeuron::CorrectVal;
+DataNeuron::~DataNeuron() {
+
+
+		for (int i = 0; i < DataNeuron::SizeData; i++) {
+			delete[] DataNeuron::SetData[i];
+
+			delete[] DataNeuron::CorrectVal[i];
+
+		}
+		delete[] DataNeuron::SetData;
+		delete[] DataNeuron::CorrectVal;
+	
 
 }
