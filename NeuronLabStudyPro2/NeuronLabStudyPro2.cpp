@@ -5,7 +5,7 @@
 #include "Tensor.h"
 
 using namespace std;
-
+extern int Val1 = 0;
 void ReadFile(string path, DataNeuron& dat, int Pixel, int InputSize) {
     fstream out;
     out.open(path);
@@ -33,7 +33,8 @@ void ReadFile(string path, DataNeuron& dat, int Pixel, int InputSize) {
 }
 
 void OutputData(double* OutNeuron, double* CorrectVal) {
-    int CorectNumber;
+    int CorectNumber=0;
+
     for (int i = 0; i < 10; i++) {
         if (CorrectVal[i] == 1.0) {
             CorectNumber = i;
@@ -45,6 +46,18 @@ void OutputData(double* OutNeuron, double* CorrectVal) {
     for (int i = 0; i < 10; i++) {
         cout << "( " << i << " ) [ " << OutNeuron[i] << " ]" << "  ";
     }
+    double max = OutNeuron[0];
+    int maxNumber = 0;
+    for (int i = 0; i < 9; i++) {
+        if (max < OutNeuron[i + 1]) {
+            maxNumber = i + 1;
+            max = OutNeuron[i + 1];
+        }
+    }
+    if (maxNumber == CorectNumber) {
+        Val1 += 1;
+    }
+    
 }
 int main()
 {
@@ -60,12 +73,33 @@ int main()
 
         int val = 3;
         const ActFuns Funns[] = { ReLU,Softmax };
-        const int ArrSize[] = { pixel,256,10 };
+        const int ArrSize[] = { pixel,256,10};
 
         Tensor T(3, ArrSize, Funns);
 
+
+
         T.StartTeachSession(0.001, 1, data, MSR, 10, rmsprop, NullR);
+
+
+        ////
+
+        int TestNumber = 10000;
+        DataNeuron dataTest(TestNumber, pixel, 10);
+        ReadFile("lib_10k.txt", dataTest, pixel, 10);
+
+
+        T.StartDirectSession(dataTest, OutputData);
+
+
+        
+
         cout << endl;
+        cout << "Number Corect: " << Val1;
+        
+        ////
+        cout << endl;
+
         cout << "Save Paramets? (1/0)\n";
         cin >> t;
         if (t) {
@@ -84,6 +118,8 @@ int main()
         Tensor T(3, ArrSize, Funns);
         T.LoadParametsNeurons();
         T.StartDirectSession(dataTest, OutputData);
+        cout << endl;
+        cout << "Number Corect: " << Val1;
 
 
     }
