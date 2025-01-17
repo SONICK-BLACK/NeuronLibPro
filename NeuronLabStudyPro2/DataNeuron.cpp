@@ -1,4 +1,5 @@
 #include "DataNeuron.h"
+using namespace Data;
 DataNeuron::DataNeuron(int SizeDat, int SizeData2, int SizeDataVal) {
 	DataNeuron::SizeData = SizeDat;
 	DataNeuron::SetData = new double* [SizeDat];
@@ -26,4 +27,23 @@ DataNeuron::~DataNeuron() {
 		delete[] DataNeuron::CorrectVal;
 	
 
+}
+DataRegression::DataRegression(int ValParametr, int SizeExperiens) {
+	this->SizeExperiens = SizeExperiens;
+	X = new double* [SizeExperiens];
+	for (int i = 0; i < SizeExperiens; i++)
+		X[i] = new double[ValParametr];
+	Y = new double[SizeExperiens];
+	b = new double[SizeExperiens];
+
+	for (int i = 0; i < SizeExperiens; i++)
+		X[i][0] = 1;
+	
+}
+DataRegression::~DataRegression() {
+	for (int i = 0; i < SizeExperiens; i++)
+		delete[] X[i];
+	delete[] X;
+	delete[] Y;
+	delete[] b;
 }

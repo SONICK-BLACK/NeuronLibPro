@@ -7,5 +7,6 @@ namespace HypPar {
 	double hOptim1 = 7;
 	double hOptim2 = 7;
 	 double dEconst = 0.000001;
+	 
 	};
 };

@@ -1,4 +1,5 @@
 #include "Tensor.h"
+using namespace Tsr;
 
 Tensor::Tensor(int VallSloy, const int ArrSizeSloy[], const ActFuns ActFunc[]) {
 	SizeValSloy = VallSloy;
@@ -395,6 +396,7 @@ void Tensor::StartDirectSession(DataNeuron& Data, void (*set_function)(double* s
 		LoadData(Data.SetData[j]);
 		StartDirectBase();
 		set_function(MatrixNeuron[SizeValSloy - 1].Neuron,Data.CorrectVal[j]);
+		
 		for (int i = 0; i < SizeValSloy; i++) {
 			MatrixNeuron[i].NeuronSetNull();
 		}

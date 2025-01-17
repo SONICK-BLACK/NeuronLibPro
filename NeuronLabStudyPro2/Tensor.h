@@ -9,9 +9,11 @@
 #include<iostream>
 #include<fstream>
 using namespace std;
+using namespace Data;
 
 
 
+namespace Tsr {
 	class Tensor
 	{
 	private:
@@ -31,7 +33,7 @@ using namespace std;
 		bool SetCorrectVal(double* SetCorrect, double& val);
 
 	public:
-	
+
 
 		Tensor(int VallSloy, const int ArrSizeSloy[], const ActFuns ActFunc[]); //Standart Pepzetron;
 		void SaveParametsNeurons(string pathW = "wheight.txt", string pathB = "bios.txt");
@@ -45,5 +47,9 @@ using namespace std;
 		~Tensor();
 
 	};
-	
+	class RegressionModel {
+	public:
+		void SetWheightsBParamets(DataRegression dataReg);
 
+	};
+}

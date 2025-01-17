@@ -4,8 +4,11 @@
 #include"DataNeuron.h"
 #include "Tensor.h"
 
+
 using namespace std;
-extern int Val1 = 0;
+using namespace Tsr;
+using namespace Data;
+int Val1 = 0;
 void ReadFile(string path, DataNeuron& dat, int Pixel, int InputSize) {
     fstream out;
     out.open(path);
@@ -61,6 +64,7 @@ void OutputData(double* OutNeuron, double* CorrectVal) {
 }
 int main()
 {
+   
     int t;
     cout << "Begin Study Network Neurons? If zero, load Paramets Neurons Network and Test (1/0)\n";
     cin >> t;

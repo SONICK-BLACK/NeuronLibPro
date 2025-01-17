@@ -1,5 +1,5 @@
-﻿  NeuronLabStudyPro2.cpp
-  TasksNetwork.cpp
+﻿  DataNeuron.cpp
+  NeuronLabStudyPro2.cpp
   Tensor.cpp
   Создание кода...
   NeuronLabStudyPro2.vcxproj -> B:\Work\LocalProject\VS\NeuronLabStudyPro2\x64\Debug\NeuronLabStudyPro2.exe
