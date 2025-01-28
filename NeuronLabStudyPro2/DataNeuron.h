@@ -13,9 +13,10 @@ namespace Data {
 	class DataRegression {
 	public:
 		double** X;
-		double* Y;
-		double* b;
+		double** Y;
+		double** b=0;
 		int SizeExperiens;
+		int SizeParametrs;
 		DataRegression(int ValParametr, int SizeExperiens);
 		~DataRegression();
 	};

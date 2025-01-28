@@ -1,5 +1,5 @@
-﻿  DataNeuron.cpp
-  NeuronLabStudyPro2.cpp
+﻿  NeuronLabStudyPro2.cpp
   Tensor.cpp
+B:\Work\LocalProject\VS\NeuronLabStudyPro2\NeuronLabStudyPro2\Tensor.cpp(438,9): warning C4101: val: неиспользованная локальная переменная
   Создание кода...
   NeuronLabStudyPro2.vcxproj -> B:\Work\LocalProject\VS\NeuronLabStudyPro2\x64\Debug\NeuronLabStudyPro2.exe

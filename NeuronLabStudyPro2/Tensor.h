@@ -48,6 +48,12 @@ namespace Tsr {
 
 	};
 	class RegressionModel {
+	private:
+		double** TransportMat(double** mat, int col, int str);
+		double def_SetMatrixAlgibration(double** a, int Size, int i, int j);
+		double def_determination(double** M, int size);
+		double def_DeterminateTwoMat(double** M2);
+		double** MultiMatrix(double** M1, double** M2, int str1, int col1, int col2, int str2);
 	public:
 		void SetWheightsBParamets(DataRegression dataReg);
 

@@ -434,6 +434,157 @@ Tensor::~Tensor() {
 	delete[] MatrixNeuron;
 
 }
+double** RegressionModel::TransportMat(double** mat, int col, int str) {
+	double val;
+	double** matT = new double*[col];
+	for (int i = 0; i < col; i++)
+		matT[i] = new double[str];
+	for (int i = 0; i < col; i++) {
+		for (int j = 0; j < str; j++) {
+			matT[i][j] = mat[i][j];
+		}
+	}
+
+	return matT;
+
+}
+void RegressionModel::SetWheightsBParamets(DataRegression dataReg) {
+	double** xT = TransportMat(dataReg.X, dataReg.SizeParametrs, dataReg.SizeExperiens);
+	double** mat = MultiMatrix(xT, dataReg.X, dataReg.SizeParametrs, dataReg.SizeExperiens, dataReg.SizeParametrs, dataReg.SizeExperiens);
+	if (mat == 0) {
+		cout << endl;
+		cout << "Error Matrix";
+	}
+	else {
+		double** matA= new double*[dataReg.SizeParametrs];
+		for (int i = 0; i < dataReg.SizeParametrs; i++) {
+			matA[i] = new double[dataReg.SizeParametrs];
+
+		}
+		for (int i = 0; i < dataReg.SizeParametrs; i++) {
+			for (int j = 0; j < dataReg.SizeParametrs; j++) {
+				matA[i][j] = pow(-1, (j + 1) + (i + 1)) * def_SetMatrixAlgibration(matA, dataReg.SizeParametrs, i, j);
+			}
+		}
+		double** matAT = TransportMat(matA, dataReg.SizeParametrs, dataReg.SizeParametrs);
+		double detmat;
+		detmat = def_determination(mat, dataReg.SizeParametrs);
+		
+		for (int i = 0; i < dataReg.SizeParametrs; i++) {
+			for (int j = 0; j < dataReg.SizeParametrs; j++) {
+				matAT[i][j] *= (1 / detmat);
+			}
+		}
+		double** mat2 = MultiMatrix(matAT, xT, dataReg.SizeParametrs, dataReg.SizeParametrs, dataReg.SizeExperiens, dataReg.SizeParametrs);
+		dataReg.b = MultiMatrix(mat2, dataReg.Y, dataReg.SizeParametrs, dataReg.SizeExperiens, 1, dataReg.SizeExperiens);
+		///Delete Matrixs
+	}
+}
+double RegressionModel::def_SetMatrixAlgibration(double** a, int Size, int i, int j) {
+	const int size = Size - 1;
+	double Amod;
+	double** A;
+	A = new double* [size];
+	for (int o = 0; o < size; o++) {
+		A[o] = new double[size];
+	}
+	int k = 0;
+	int h = 0;
+	for (int r = 0; r < Size; r++) {
+		for (int g = 0; g < Size; g++) {
+			if (!(r == i || g == j)) {
+				A[h][k] = a[r][g];
+				k += 1;
+			}
+			if (k == size) {
+				k = 0;
+				h += 1;
+			}
+		}
+	}
+
+	Amod = def_determination(A, size);
+	for (int o = 0; o < size; o++) {
+		delete[] A[o];
+	}
+	delete[] A;
+
+	return Amod;
+	}
+double RegressionModel::def_determination(double** M, int size) {
+
+	double SumA = 0;
+	if (size != 2) {
+		double** A = new double* [size - 1];
+		for (int o = 0; o < size - 1; o++) {
+			A[o] = new double[size - 1];
+		}
+		int k = 0;
+		int h = 0;
+		for (int j = 0; j < size; j++) {
+			for (int r = 0; r < size; r++) {
+				for (int g = 0; g < size; g++) {
+					if (!(r == 0 || g == j)) {
+						A[h][k] = M[r][g];
+						k += 1;
+					}
+					if (k == size - 1) {
+						k = 0;
+						h += 1;
+					}
+				}
+			}
+			h = 0;
+			SumA += M[0][j] * pow(-1, 1 + j + 1) * def_determination(A, size - 1);
+		}
+		for (int i = 0; i < size - 1; i++)
+			delete[] A[i];
+		delete[] A;
+	}
+	else {
+		SumA = def_DeterminateTwoMat(M);
+	}
 
 
 
+	return SumA;
+}
+double RegressionModel::def_DeterminateTwoMat(double** M2) {
+	double SumA = 0;
+	SumA = (M2[0][0] * M2[1][1]) - (M2[0][1] * M2[1][0]);
+	return SumA;
+}
+double** RegressionModel::MultiMatrix(double** M1, double** M2, int str1, int col1, int col2, int str2) {
+	if (col1 != str2) {
+		cout << endl;
+		cout << "Error MultyMatrix";
+		return 0;
+	}
+	else {
+		double** Mat = new double* [str1];
+		for (int i = 0; i < str1; i++) {
+			Mat[i] = new double[col2];
+		}
+		for (int i = 0; i < str1; i++) {
+			for (int j = 0; j < str1; j++) {
+				Mat[i][j] = 0;
+			}
+
+		}
+
+
+		for (int i = 0; i < str1; i++) {
+
+			for (int g = 0; g < col2; g++) {
+				for (int j = 0; j < col1; j++) {
+					Mat[i][g] += M1[i][j] * M2[j][g];
+
+				}
+
+			}
+		}
+
+		return Mat;
+	}
+
+}
