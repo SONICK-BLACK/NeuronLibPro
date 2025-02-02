@@ -448,7 +448,7 @@ double** RegressionModel::TransportMat(double** mat, int col, int str) {
 	return matT;
 
 }
-void RegressionModel::SetWheightsBParamets(DataRegression dataReg) {
+void RegressionModel::SetWheightsBParamets(DataRegression& dataReg) {
 	double** xT = TransportMat(dataReg.X, dataReg.SizeParametrs, dataReg.SizeExperiens);
 	double** mat = MultiMatrix(xT, dataReg.X, dataReg.SizeParametrs, dataReg.SizeExperiens, dataReg.SizeParametrs, dataReg.SizeExperiens);
 	if (mat == 0) {
@@ -463,7 +463,7 @@ void RegressionModel::SetWheightsBParamets(DataRegression dataReg) {
 		}
 		for (int i = 0; i < dataReg.SizeParametrs; i++) {
 			for (int j = 0; j < dataReg.SizeParametrs; j++) {
-				matA[i][j] = pow(-1, (j + 1) + (i + 1)) * def_SetMatrixAlgibration(matA, dataReg.SizeParametrs, i, j);
+				matA[i][j] = pow(-1, (j + 1) + (i + 1)) * def_SetMatrixAlgibration(mat, dataReg.SizeParametrs, i, j);
 			}
 		}
 		double** matAT = TransportMat(matA, dataReg.SizeParametrs, dataReg.SizeParametrs);
@@ -478,6 +478,21 @@ void RegressionModel::SetWheightsBParamets(DataRegression dataReg) {
 		double** mat2 = MultiMatrix(matAT, xT, dataReg.SizeParametrs, dataReg.SizeParametrs, dataReg.SizeExperiens, dataReg.SizeParametrs);
 		dataReg.b = MultiMatrix(mat2, dataReg.Y, dataReg.SizeParametrs, dataReg.SizeExperiens, 1, dataReg.SizeExperiens);
 		///Delete Matrixs
+		for (int i = 0; i < dataReg.SizeParametrs; i++) {
+			delete[] xT[i];
+			delete[] matAT[i];
+			delete[] mat2[i];
+			delete[] matA[i];
+			delete[] mat[i];
+		}
+			
+		delete[] xT;
+		delete[] matAT;
+		delete[] mat2;
+		delete[] matA;
+		delete[] mat;
+
+
 	}
 }
 double RegressionModel::def_SetMatrixAlgibration(double** a, int Size, int i, int j) {

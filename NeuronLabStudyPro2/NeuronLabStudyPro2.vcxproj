@@ -104,6 +104,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -132,6 +133,7 @@
     <ClCompile Include="Function.cpp" />
     <ClCompile Include="NeuronClass.cpp" />
     <ClCompile Include="NeuronLabStudyPro2.cpp" />
+    <ClCompile Include="Pandos.cpp" />
     <ClCompile Include="TasksNetwork.cpp" />
     <ClCompile Include="Tensor.cpp" />
     <ClCompile Include="WheightClass.cpp" />
@@ -142,6 +144,7 @@
     <ClInclude Include="DataNeuron.h" />
     <ClInclude Include="Function.h" />
     <ClInclude Include="NeuronClass.h" />
+    <ClInclude Include="Pandos.h" />
     <ClInclude Include="TasksNetwork.h" />
     <ClInclude Include="Tensor.h" />
     <ClInclude Include="WheightClass.h" />

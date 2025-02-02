@@ -55,7 +55,8 @@ namespace Tsr {
 		double def_DeterminateTwoMat(double** M2);
 		double** MultiMatrix(double** M1, double** M2, int str1, int col1, int col2, int str2);
 	public:
-		void SetWheightsBParamets(DataRegression dataReg);
+		void SetWheightsBParamets(DataRegression& dataReg);
+	
 
 	};
 }
