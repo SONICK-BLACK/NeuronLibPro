@@ -36,6 +36,18 @@ void ReadFile(string path, DataNeuron& dat, int Pixel, int InputSize) {
     cout << "End Read File\n";
     out.close();
 }
+void SetDatasetData(DataNeuron& dat, Pandos& Pn, int SizeData) {
+    for (int i = 0; i < SizeData; i++) {
+        for (int j = 0; j < Pn.ValParamets-1; j++) {
+            
+            dat.SetData[i][j] = any_cast<int>(Pn(i, Pn.VectorParamets[j]));
+        }
+        dat.CorrectVal[i][0] = any_cast<int>(Pn(i, Pn.VectorParamets[Pn.ValParamets - 1]));
+        
+      
+    }
+
+}
 
 void OutputData(double* OutNeuron, double* CorrectVal) {
     int CorectNumber=0;
@@ -64,6 +76,14 @@ void OutputData(double* OutNeuron, double* CorrectVal) {
     }
     
 }
+void OutputData1(double* OutNeuron, double* CorrectVal) {
+    cout << "Corect Znach: " << CorrectVal[0]<<"\n";
+    cout << "Output Data: " << OutNeuron[0] << "\n";
+    
+    
+}
+
+
 int main()
 {
 
@@ -130,159 +150,52 @@ int main()
 
       }
       */
-
-    int sizeDat = 200;
-    Pandos pn("accident.csv", sizeDat);
-    for (int i = 0; i < pn.ValParamets; i++) {
-        cout << pn.VectorParamets[i] << " ";
-    }
-    int AgeMid = 0;
-    int SpeedMid = 0;
-    string modaGend;
-    string modaHelment;
-    string modaSeatbelt;
-
-    int SizeMod1G = 0;
-    int SizeMod2G = 0;
-    int SizeMod1H = 0;
-    int SizeMod2H = 0;
-    int SizeMod1S = 0;
-    int SizeMod2S = 0;
-
-
+    int sizeData = 200;
+    Pandos pn("accident.csv", sizeData);
     pn.SetMidleData();
-
-    int k = 0;
-
-    for (int i = 0; i < sizeDat; i++) {
-        if (!(any_cast<int>(pn(i)["Age"]) == 0)) {
-            AgeMid += any_cast<int>(pn(i)["Age"]);
-            k += 1;
-        }
-        if (!(any_cast<int>(pn(i)["Speed_of_Impact"]) == 0)) {
-            SpeedMid += any_cast<int>(pn(i)["Speed_of_Impact"]);
-
-
-        }
-        if (!(any_cast<string>(pn(i)["Gender"]) == "null")) {
-            if (any_cast<string>(pn(i)["Gender"]) == "Female") {
-                SizeMod1G += 1;
-            }
-            else {
-                SizeMod2G += 1;
-            }
-        }
-    
-        if (!(any_cast<string>(pn(i)["Helmet_Used"]) == "null")) {
-            if (any_cast<string>(pn(i)["Helmet_Used"]) == "Yes") {
-                SizeMod1H += 1;
-            }
-            else {
-                SizeMod2H += 1;
-            }
-        }
-
-
-        if (!(any_cast<string>(pn(i)["Seatbelt_Used"]) == "null")) {
-            if (any_cast<string>(pn(i)["Seatbelt_Used"]) == "Yes") {
-                SizeMod1S += 1;
-            }
-            else {
-                SizeMod2S += 1;
-            }
-        }
-
-
-
-
-
-    }
-    if (SizeMod1G > SizeMod2G) {
-        modaGend = "Female";
-
-    }
-    else if (SizeMod1G < SizeMod2G) {
-        modaGend = "Male";
-    }
-    else {
-        modaGend = "Female";
-    }
-
-
-    if (SizeMod1H > SizeMod2H) {
-        modaHelment = "Yes";
-
-    }
-    else if (SizeMod1H < SizeMod2H) {
-        modaHelment = "No";
-    }
-    else {
-        modaHelment = "Yes";
-    }
-
-
-
-    if (SizeMod1S > SizeMod2S) {
-        modaSeatbelt = "Yes";
-
-    }
-    else if (SizeMod1S < SizeMod2S) {
-        modaSeatbelt = "No";
-    }
-    else {
-        modaSeatbelt = "Yes";
-    }
-
-
-
-
-
-
-
-
-    AgeMid = AgeMid / k;
-    SpeedMid = SpeedMid / k;
-    cout << "\n";
-    cout << "Speed Mid:" << "\n";
-
-    cout << SpeedMid;
-    cout << "\n";
-    cout << "Age Mid:" << "\n";
-    cout << AgeMid;
-    cout << "\n";
-    cout << "moda Gender:" << "\n";
-    cout << modaGend;
-    cout << "\n";
-    cout << "moda Helmet_Used:" << "\n";
-    cout << modaHelment;
-    cout << "\n";
-    cout << "moda Seatbelt_Used:" << "\n";
-    cout << modaSeatbelt;
-
-
-    cout << "\n\n";
-
-  //  pn.SetMidleData();
-    cout << "\n";
-    cout << "Speed Mid:" << "\n";
-
-    cout << any_cast<int>(pn.MidleData["Speed_of_Impact"]);
-    cout << "\n";
-    cout << "Age Mid:" << "\n";
-    cout << any_cast<int>(pn.MidleData["Age"]);
-    cout << "\n";
-    cout << "moda Gender:" << "\n";
-    cout << any_cast<string>(pn.MidleData["Gender"]);
-    cout << "\n";
-    cout << "moda Helmet_Used:" << "\n";
-    cout << any_cast<string>(pn.MidleData["Helmet_Used"]);
-    cout << "\n";
-    cout << "moda Seatbelt_Used:" << "\n";
-    cout << any_cast<string>(pn.MidleData["Seatbelt_Used"]);
-
-
-    int b[6] = { 1,1,1,1,1,0};
+    int b[6] = { 1,1,1,1,1,0 };
     pn.SubstitutionNullParamets(b);
+
+    for (int i = 0; i < sizeData; i++) {
+        if (any_cast<string>(pn(i, "Gender")) == "Female") {
+            int v = 1;
+            pn(i, "Gender") = v;
+
+
+        }
+        else {
+            int v = 0;
+            pn(i, "Gender") = v;
+        }
+        if (any_cast<string>(pn(i, "Helmet_Used")) == "Yes") {
+            int v = 1;
+            pn(i, "Helmet_Used") = v;
+        }
+        else {
+            int v = 0;
+            pn(i, "Helmet_Used") = v;
+        }
+        if (any_cast<string>(pn(i, "Seatbelt_Used")) == "Yes") {
+            int v = 1;
+            pn(i, "Seatbelt_Used") = v;
+        }
+        else {
+            int v = 0;
+            pn(i, "Seatbelt_Used") = v;
+        }
+    }
+
+    DataNeuron data(sizeData, 5, 1);
+    SetDatasetData(data, pn, sizeData);
+    const ActFuns Funns[] = { ReLU,ReLU };
+    const int ArrSize[] = { 5,50,1};
+    Tensor T(3, ArrSize, Funns);
+
+    T.StartTeachSession(0.3, 1, data, MSR, 10, NullO, NullR);
+
+
+    T.StartDirectSession(data, OutputData1);
+
 
 
     

@@ -93,9 +93,12 @@ void Tensor::StartTeachSession(double SpeedTeach, int PacketSet, DataNeuron& Dat
 			
 		//	cout << " ttttttttt " << endl;
 				//////////
+			
+			if (MatrixNeuron[SizeValSloy - 1].sizeMatrix == 1) {
+				StartTrainingSet(Data.CorrectVal[j], FunErr);
+			}
 
-
-				if (!SetCorrectVal(Data.CorrectVal[j], Val)) {
+				else if (!SetCorrectVal(Data.CorrectVal[j], Val)) {
 
 					StartTrainingSet(Data.CorrectVal[j], FunErr);
 				}
@@ -117,8 +120,11 @@ void Tensor::StartTeachSession(double SpeedTeach, int PacketSet, DataNeuron& Dat
 
 		}
 		SetFlagPacket = 0;
-		cout << endl;
-		cout << "Epoch (" << h << "): " << (Val / Data.SizeData) * 100 << "%" << "\n";
+		if (!(MatrixNeuron[SizeValSloy - 1].sizeMatrix == 1)) {
+			cout << endl;
+			cout << "Epoch (" << h << "): " << (Val / Data.SizeData) * 100 << "%" << "\n";
+		}
+		
 		
 
 		Val = 0;
@@ -126,6 +132,8 @@ void Tensor::StartTeachSession(double SpeedTeach, int PacketSet, DataNeuron& Dat
 	cout << endl;
 	cout << "End Teach Tensor\n";
 }
+
+//
 void Tensor::StartTeachSession(double SpeedTeach, int PacketSet, DataNeuron& Data, ErrFuns FunErr, int epoch, OptimizaterGradient Optimizator, Regulizators regulizator) {
 	for (int i = 0; i < SizeValSloy; i++) {
 		MatrixNeuron[i].InitNeuronClassErr();
@@ -150,9 +158,16 @@ void Tensor::StartTeachSession(double SpeedTeach, int PacketSet, DataNeuron& Dat
 
 		//	cout << " ttttttttt " << endl;
 				//////////
-
-
-			if (!SetCorrectVal(Data.CorrectVal[j], Val)) {
+			
+			if(MatrixNeuron[SizeValSloy - 1].sizeMatrix == 1) {
+				if (Optimizator != NullO) {
+					StartTrainingSet(Data.CorrectVal[j], FunErr, Optimizator);
+				}
+				else {
+					StartTrainingSet(Data.CorrectVal[j], FunErr);
+				}
+			}
+			else if (!SetCorrectVal(Data.CorrectVal[j], Val)) {
 
 				if (Optimizator != NullO) {
 					StartTrainingSet(Data.CorrectVal[j], FunErr, Optimizator);
@@ -183,8 +198,10 @@ void Tensor::StartTeachSession(double SpeedTeach, int PacketSet, DataNeuron& Dat
 
 		}
 		SetFlagPacket = 0;
-		cout << endl;
-		cout << "Epoch (" << h << "): " << (Val / Data.SizeData) * 100 << "%" << "\n";
+		if (!(MatrixNeuron[SizeValSloy - 1].sizeMatrix == 1)) {
+			cout << endl;
+			cout << "Epoch (" << h << "): " << (Val / Data.SizeData) * 100 << "%" << "\n";
+		}
 
 
 		Val = 0;
@@ -192,6 +209,7 @@ void Tensor::StartTeachSession(double SpeedTeach, int PacketSet, DataNeuron& Dat
 	cout << endl;
 	cout << "End Teach Tensor\n";
 }
+//
 void Tensor::StartTrainingSet(double* VectorRight, ErrFuns erF, OptimizaterGradient Optimizator) {
 	for (int i = 0; i < SizeValSloy; i++) {
 		MatrixNeuron[i].NeuronErrSetNull();
@@ -204,6 +222,8 @@ void Tensor::StartTrainingSet(double* VectorRight, ErrFuns erF, OptimizaterGradi
 		TasksNetwork::ErrorTeachSloySet(MatrixNeuron[i - 1], MatrixNeuron[i], MatrixWheight[i - 1], MatrixBios[i - 1], act[i - 1],Optimizator);//Verno
 	}
 }
+
+
 void Tensor::StartGradient(int PacketSet, double SpeedTeach, Regulizators regulizator, int SizeObservations) {
 	HypPar::DataHyperParametr HYpPar;
 /*??*/	if (regulizator == L1) {
@@ -255,6 +275,9 @@ void Tensor::StartGradient(int PacketSet, double SpeedTeach, Regulizators reguli
 		MatrixBios[i].BiosErrSetNull();
 	}
 }
+
+
+//
 void Tensor::StartTeachSession(double SpeedTeach, int PacketSet, DataNeuron& Data, ErrFuns FunErr, int epoch, OptimizaterGradient Optimizator, Regulizators regulizator, bool StochasticSpeed) {
 	for (int i = 0; i < SizeValSloy; i++) {
 		MatrixNeuron[i].InitNeuronClassErr();
@@ -280,8 +303,16 @@ void Tensor::StartTeachSession(double SpeedTeach, int PacketSet, DataNeuron& Dat
 		//	cout << " ttttttttt " << endl;
 				//////////
 
+			if (MatrixNeuron[SizeValSloy - 1].sizeMatrix == 1) {
+				if (Optimizator != NullO) {
+					StartTrainingSet(Data.CorrectVal[j], FunErr, Optimizator);
+				}
+				else {
+					StartTrainingSet(Data.CorrectVal[j], FunErr);
+				}
+			}
 
-			if (!SetCorrectVal(Data.CorrectVal[j], Val)) {
+			else if (!SetCorrectVal(Data.CorrectVal[j], Val)) {
 
 				if (Optimizator != NullO) {
 					StartTrainingSet(Data.CorrectVal[j], FunErr, Optimizator);
@@ -322,8 +353,11 @@ void Tensor::StartTeachSession(double SpeedTeach, int PacketSet, DataNeuron& Dat
 
 		}
 		SetFlagPacket = 0;
-		cout << endl;
-		cout << "Epoch (" << h << "): " << (Val / Data.SizeData) * 100 << "%" << "\n";
+		if (!(MatrixNeuron[SizeValSloy - 1].sizeMatrix == 1)) {
+			cout << endl;
+			cout << "Epoch (" << h << "): " << (Val / Data.SizeData) * 100 << "%" << "\n";
+		}
+		
 
 
 		Val = 0;
@@ -331,6 +365,12 @@ void Tensor::StartTeachSession(double SpeedTeach, int PacketSet, DataNeuron& Dat
 	cout << endl;
 	cout << "End Teach Tensor\n";
 }
+
+//
+
+
+
+
 void Tensor::SaveParametsNeurons(string pathW, string pathB) {
 	ofstream outW;
 	outW.open(pathW);

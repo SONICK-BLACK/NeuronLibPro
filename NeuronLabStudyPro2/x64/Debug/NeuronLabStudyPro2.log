@@ -1,4 +1,2 @@
-﻿  Pandos.cpp
-B:\Work\LocalProject\VS\NeuronLabStudyPro2\NeuronLabStudyPro2\Pandos.cpp(72,53): warning C4267: аргумент: преобразование из "size_t" в "int"; возможна потеря данных
-B:\Work\LocalProject\VS\NeuronLabStudyPro2\NeuronLabStudyPro2\Pandos.cpp(221,1): warning C4715: Pandos::SetStringint: значение возвращается не при всех путях выполнения
+﻿  NeuronLabStudyPro2.cpp
   NeuronLabStudyPro2.vcxproj -> B:\Work\LocalProject\VS\NeuronLabStudyPro2\x64\Debug\NeuronLabStudyPro2.exe
