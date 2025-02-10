@@ -40,9 +40,16 @@ void SetDatasetData(DataNeuron& dat, Pandos& Pn, int SizeData) {
     for (int i = 0; i < SizeData; i++) {
         for (int j = 0; j < Pn.ValParamets-1; j++) {
             
-            dat.SetData[i][j] = any_cast<int>(Pn(i, Pn.VectorParamets[j]));
+            dat.SetData[i][j] = any_cast<double>(Pn(i, Pn.VectorParamets[j]));
         }
-        dat.CorrectVal[i][0] = any_cast<int>(Pn(i, Pn.VectorParamets[Pn.ValParamets - 1]));
+       if(any_cast<double>(Pn(i, Pn.VectorParamets[Pn.ValParamets - 1]))==0){
+           dat.CorrectVal[i][0] = 0;
+           dat.CorrectVal[i][1] = 1;
+       }
+       else {
+           dat.CorrectVal[i][0] = 1;
+           dat.CorrectVal[i][1] = 0;
+       }
         
       
     }
@@ -77,8 +84,31 @@ void OutputData(double* OutNeuron, double* CorrectVal) {
     
 }
 void OutputData1(double* OutNeuron, double* CorrectVal) {
-    cout << "Corect Znach: " << CorrectVal[0]<<"\n";
-    cout << "Output Data: " << OutNeuron[0] << "\n";
+    int val;
+    if (OutNeuron[1] > OutNeuron[0]) {
+        val = 1;
+      
+        cout << "Output Data: " << "No surv" << "\n";
+  }
+    if (OutNeuron[1] <  OutNeuron[0]) {
+        val = 0;
+        
+        cout << "Output Data: " << "Surv" << "\n";
+    }
+
+    if (CorrectVal[val] == 1) {
+        Val1 += 1;
+
+
+    }
+    if (CorrectVal[0] == 0) {
+      
+        cout << "Corect Data: " << "Surv" << "\n";
+   }
+    else {
+       
+        cout << "Corect Data: " << "No Surv" << "\n";
+    }
     
     
 }
@@ -87,7 +117,7 @@ void OutputData1(double* OutNeuron, double* CorrectVal) {
 int main()
 {
 
-    /*  int t;
+/*  int t;
       cout << "Begin Study Network Neurons? If zero, load Paramets Neurons Network and Test (1/0)\n";
       cin >> t;
       if (t) {
@@ -150,7 +180,7 @@ int main()
 
       }
       */
-    int sizeData = 200;
+ /*   int sizeData = 100;
     Pandos pn("accident.csv", sizeData);
     pn.SetMidleData();
     int b[6] = { 1,1,1,1,1,0 };
@@ -158,47 +188,87 @@ int main()
 
     for (int i = 0; i < sizeData; i++) {
         if (any_cast<string>(pn(i, "Gender")) == "Female") {
-            int v = 1;
+            double v = 1;
             pn(i, "Gender") = v;
 
 
         }
         else {
-            int v = 0;
+            double v = 0;
             pn(i, "Gender") = v;
         }
         if (any_cast<string>(pn(i, "Helmet_Used")) == "Yes") {
-            int v = 1;
+            double v = 1;
             pn(i, "Helmet_Used") = v;
         }
         else {
-            int v = 0;
+            double v = 0;
             pn(i, "Helmet_Used") = v;
         }
         if (any_cast<string>(pn(i, "Seatbelt_Used")) == "Yes") {
-            int v = 1;
+            double v = 1;
             pn(i, "Seatbelt_Used") = v;
         }
         else {
-            int v = 0;
+            double v = 0;
             pn(i, "Seatbelt_Used") = v;
         }
     }
-
-    DataNeuron data(sizeData, 5, 1);
+    int b1[6] = { 1,0,1,0,0,0 };
+    pn.SetMormolazeDataOfOne(b1);
+    DataNeuron data(sizeData, 5, 2);
     SetDatasetData(data, pn, sizeData);
-    const ActFuns Funns[] = { ReLU,ReLU };
-    const int ArrSize[] = { 5,50,1};
+    const ActFuns Funns[] = { ReLU,Softmax };
+    const int ArrSize[] = { 5,100,2};
     Tensor T(3, ArrSize, Funns);
 
-    T.StartTeachSession(0.3, 1, data, MSR, 10, NullO, NullR);
+    T.StartTeachSession(0.6, 1, data, MSR, 100, Momentum, NullR);
 
 
     T.StartDirectSession(data, OutputData1);
 
+   double C = Val1 / (double)sizeData;
+   cout << "\n";
+   cout << C * 100;
 
 
-    
+    */
+int sizeDat=5;
+int valpar=4;
+Pandos pn("house.csv", sizeDat);
+pn.SetDiversity();
+for (int j = 0; j < pn.ValParamets; j++) {
+    cout << pn.VectorParamets[j] << ": ";
+    for (int i = 0; i < pn.ListDatDiversity[pn.VectorParamets[j]].size(); i++) {
+        cout << any_cast<double>(pn.ListDatDiversity[pn.VectorParamets[j]][i]) << " ";
+
+    }
+    cout << "\n";
+}
+cout << "\n";
+cout<<any_cast<double>(pn.SetModa("Area"));
+
+cout << "\n";
+DataRegression rg(valpar, sizeDat);
+for (int i = 0; i < sizeDat; i++) {
+    for (int j = 1; j < valpar; j++) {
+        rg.X[i][j] = any_cast<double>(pn(i, pn.VectorParamets[j]));
+     
+    }
+
+  rg.Y[i][0] = any_cast<double>(pn.Data[i]["Price"]);
+
+}
+
+RegressionModel reg;
+reg.SetWheightsBParamets(rg);
+cout << "\n";
+for (int j = 0; j < valpar; j++) {
+    cout << rg.b[j][0];
+    cout << "\n";
+}
+
+reg.SetRcriteria(rg);
 
    
 

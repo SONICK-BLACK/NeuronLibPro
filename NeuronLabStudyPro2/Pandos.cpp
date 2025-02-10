@@ -40,8 +40,8 @@ Pandos::Pandos(string path, int SizeData) {
 		while (getline(StreamDataStr, Dat, ',')) {
 
 			if (Dat == "") {
-				if (TypeParamets[i] == "(int)") {
-					int v = 0;
+				if (TypeParamets[i] == "(double)") {
+					double v = 0;
 					Data[g][VectorParamets[i]] = v;
 				}
 				else {
@@ -73,11 +73,13 @@ Pandos::Pandos(string path, int SizeData) {
 			/// Possible Optimization
 
 			if (SetDigitStr((signed char*)&Dat[0], Dat.length())) {
-				
-				Data[g][VectorParamets[i]] = stoi(Dat);
+				stringstream streamDoubl(Dat);
+				double val;
+				streamDoubl >> val;
+				Data[g][VectorParamets[i]] = val;
 				if (F1) {
-				TypeParamets.push_back("(int)");
-				mapTypeParamets[VectorParamets[i]] = "(int)";
+				TypeParamets.push_back("(double)");
+				mapTypeParamets[VectorParamets[i]] = "(double)";
 					
 				}
 				
@@ -184,14 +186,14 @@ void Pandos::SetMidleData() {
 			MidleData[VectorParamets[j]] = VectorSet[k];
 			delete[] SizePar;
 		}
-		else if (TypeParamets[j] == "(int)") {
-			int ValMid = 0;
+		else if (TypeParamets[j] == "(double)") {
+			double ValMid = 0;
 			for (int i = 0; i < SizeData; i++) {
-				ValMid += any_cast<int>(Data[i][VectorParamets[j]]);
+				ValMid += any_cast<double>(Data[i][VectorParamets[j]]);
 
 			}
 			
-			ValMid = ValMid / SizeData;
+			ValMid = ValMid / (double)SizeData;
 			MidleData[VectorParamets[j]] = ValMid;
 			
 		}
@@ -245,10 +247,10 @@ void Pandos::SubstitutionNullParamets() {
 					Data[i][VectorParamets[j]] = val;
 				}
 			}
-			else if (TypeParamets[j] == "(int)") {
+			else if (TypeParamets[j] == "(double)") {
 				
-				if (any_cast<int>(Data[i][VectorParamets[j]]) == 0) {
-					int val = any_cast<int>(MidleData[VectorParamets[j]]);
+				if (any_cast<double>(Data[i][VectorParamets[j]]) == 0) {
+					double val = any_cast<double>(MidleData[VectorParamets[j]]);
 					
 					Data[i][VectorParamets[j]] =val;
 
@@ -271,10 +273,10 @@ void Pandos::SubstitutionNullParamets(int b[]) {
 					Data[i][VectorParamets[j]] = val;
 				}
 			}
-			else if (TypeParamets[j] == "(int)" && b[j]!=0) {
+			else if (TypeParamets[j] == "(double)" && b[j]!=0) {
 
-				if (any_cast<int>(Data[i][VectorParamets[j]]) == 0) {
-					int val = any_cast<int>(MidleData[VectorParamets[j]]);
+				if (any_cast<double>(Data[i][VectorParamets[j]]) == 0) {
+					double val = any_cast<double>(MidleData[VectorParamets[j]]);
 
 					Data[i][VectorParamets[j]] = val;
 
@@ -285,12 +287,32 @@ void Pandos::SubstitutionNullParamets(int b[]) {
 	}
 
 }
+
+void Pandos::SetMormolazeDataOfOne(int b[]) {
+	for (int i = 0; i < ValParamets; i++) {
+		double max=any_cast<double>(Data[0][VectorParamets[i]]);
+		double min= any_cast<double>(Data[0][VectorParamets[i]]);
+		for (int j = 0; j < SizeData-1; j++) {
+			if (max <any_cast<double>(Data[j + 1][VectorParamets[i]])) {
+				max = any_cast<double>(Data[j + 1][VectorParamets[i]]);
+			}
+			if (min >any_cast<double>(Data[j + 1][VectorParamets[i]])) {
+				min = any_cast<double>(Data[j + 1][VectorParamets[i]]);
+			}
+		}
+		for (int j = 0; j < SizeData; j++) {
+			Data[j][VectorParamets[i]] = (any_cast<double>(Data[j][VectorParamets[i]]) - min) / (max + min);
+		}
+	}
+}
+
+
 //A dubious function in the public. Is it needed at all?
 void Pandos::SetDiversity() {
 	
 	for (int j = 0; j < ValParamets; j++) {
-		if (TypeParamets[j] == "(int)") {
-			ListDatDiversity[VectorParamets[j]].push_back(any_cast<int>(Data[0][VectorParamets[j]]));
+		if (TypeParamets[j] == "(double)") {
+			ListDatDiversity[VectorParamets[j]].push_back(any_cast<double>(Data[0][VectorParamets[j]]));
 		}
 		else if (TypeParamets[j] == "(string)") {
 			ListDatDiversity[VectorParamets[j]].push_back(any_cast<string>(Data[0][VectorParamets[j]]));
@@ -300,17 +322,17 @@ void Pandos::SetDiversity() {
 
 	for (int i = 1; i < SizeData; i++) {
 		for (int j = 0; j < ValParamets; j++) {
-			if (TypeParamets[j] == "(int)") {
+			if (TypeParamets[j] == "(double)") {
 				bool F = false;
 				span<any> intList = ListDatDiversity[VectorParamets[j]];
 				for (any val : intList) {
-					if (any_cast<int>(val) == any_cast<int>(Data[i][VectorParamets[j]])) {
+					if (any_cast<double>(val) == any_cast<double>(Data[i][VectorParamets[j]])) {
 						goto t;
 					}
 				}
 				F = true;
 				if (F) {
-					ListDatDiversity[VectorParamets[j]].push_back(any_cast<int>(Data[i][VectorParamets[j]]));
+					ListDatDiversity[VectorParamets[j]].push_back(any_cast<double>(Data[i][VectorParamets[j]]));
 
 				}
 			t:
@@ -351,13 +373,13 @@ any Pandos::SetModa(string parametr) {
 		intSize[i] = 0;
 	}
 
-	if (mapTypeParamets[parametr] == "(int)") {
+	if (mapTypeParamets[parametr] == "(double)") {
 		
 		for (int i = 0; i < SizeData; i++) {
 			
 			int k = 0;
 			while (true) {
-				if (any_cast<int>(Data[i][parametr]) == any_cast<int>(ListDatDiversity[parametr][k])) {
+				if (any_cast<double>(Data[i][parametr]) == any_cast<double>(ListDatDiversity[parametr][k])) {
 					break;
 				}
 				k += 1;

@@ -8,6 +8,7 @@ public:
 	int sizeMatrix;
 	void InitNeuronClass(int NeuronSize);
 	void NeuronErrSetNull();
+	void NeuronSetNulL();
 	void NeuronSetNull();
 	void InitNeuronClassErr();
 	~NeuronClass();

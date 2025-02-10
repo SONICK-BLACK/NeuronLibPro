@@ -35,7 +35,7 @@ DataRegression::DataRegression(int ValParametr, int SizeExperiens) {
 	for (int i = 0; i < SizeExperiens; i++)
 		X[i] = new double[ValParametr];
 	Y = new double*[SizeExperiens];
-	for (int i = 0; i < 1; i++) {
+	for (int i = 0; i < SizeExperiens; i++) {
 		Y[i] = new double[1];
 	}
 
@@ -47,12 +47,12 @@ DataRegression::~DataRegression() {
 	for (int i = 0; i < SizeExperiens; i++)
 		delete[] X[i];
 	delete[] X;
-	for (int i = 0; i < 1; i++) {
+	for (int i = 0; i < SizeExperiens; i++) {
 		delete[] Y[i];
 	}
 	delete[] Y;
 	if (b != 0) {
-		for (int i = 0; i < 1; i++) {
+		for (int i = 0; i < SizeParametrs; i++) {
 			delete[] b[i];
 		}
 		delete[] b;

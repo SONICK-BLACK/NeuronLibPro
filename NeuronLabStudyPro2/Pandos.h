@@ -27,6 +27,7 @@ public:
 	int SizeData=0;
 	Pandos(string path, int SizeData);
 	void SetMidleData();
+	void SetMormolazeDataOfOne(int b[]);
 	void SetDiversity();
 	void SubstitutionNullParamets();
 	void SubstitutionNullParamets(int b[]);

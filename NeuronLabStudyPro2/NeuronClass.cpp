@@ -35,6 +35,16 @@ void NeuronClass:: NeuronSetNull() {
 		}
 	}
 }
+//
+void NeuronClass::NeuronSetNulL() {
+	for (int i = 0; i < sizeMatrix; i++) {
+		Neuron[i] = 0;
+	}
+	
+}
+
+//
+
 NeuronClass::~NeuronClass() {
 	delete[] Neuron;
 	if (NeuronErr != 0) {

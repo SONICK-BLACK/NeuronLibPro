@@ -79,26 +79,19 @@ void Tensor::StartTeachSession(double SpeedTeach, int PacketSet, DataNeuron& Dat
 		MatrixBios[i].InitErrBios();
 	}
 	int SetFlagPacket = 0;
-	double Val = 0;
+
 	for (int h = 0; h < epoch; h++) {
 		for (int j = 0; j < Data.SizeData; j++) {
 
 			LoadData(Data.SetData[j]);
 			StartDirect();
-			/////.....
-	//	cout << "ttttttttt "<<endl;
-		//		for (int u = 0; u < 10; u++) {
-				//	cout << MatrixNeuron[SizeValSloy - 1].Neuron[u] << "  ";
-		//	}
-			
-		//	cout << " ttttttttt " << endl;
-				//////////
+	
 			
 			if (MatrixNeuron[SizeValSloy - 1].sizeMatrix == 1) {
 				StartTrainingSet(Data.CorrectVal[j], FunErr);
 			}
 
-				else if (!SetCorrectVal(Data.CorrectVal[j], Val)) {
+				else if (!SetCorrectVal(Data.CorrectVal[j])) {
 
 					StartTrainingSet(Data.CorrectVal[j], FunErr);
 				}
@@ -121,13 +114,25 @@ void Tensor::StartTeachSession(double SpeedTeach, int PacketSet, DataNeuron& Dat
 		}
 		SetFlagPacket = 0;
 		if (!(MatrixNeuron[SizeValSloy - 1].sizeMatrix == 1)) {
-			cout << endl;
-			cout << "Epoch (" << h << "): " << (Val / Data.SizeData) * 100 << "%" << "\n";
-		}
-		
-		
+			double val = 0;
+			for (int j = 0; j < Data.SizeData; j++) {
+				LoadData(Data.SetData[j]);
+				StartDirectBase();
+				SetCorrectVal(Data.CorrectVal[j], val);
+				for (int i = 0; i < SizeValSloy; i++) {
+					MatrixNeuron[i].NeuronSetNulL();
+				}
 
-		Val = 0;
+
+			}
+			cout << endl;
+			cout << "Epoch (" << h << "): " << (val / Data.SizeData) * 100 << "%" << "\n";
+		}
+		else {
+			cout << "Epoch (" << h << "):\n ";
+
+		}
+
 	}
 	cout << endl;
 	cout << "End Teach Tensor\n";
@@ -144,20 +149,13 @@ void Tensor::StartTeachSession(double SpeedTeach, int PacketSet, DataNeuron& Dat
 		MatrixBios[i].InitErrBios();
 	}
 	int SetFlagPacket = 0;
-	double Val = 0;
+	
 	for (int h = 0; h < epoch; h++) {
 		for (int j = 0; j < Data.SizeData; j++) {
 
 			LoadData(Data.SetData[j]);
 			StartDirect();
-			/////.....
-	//	cout << "ttttttttt "<<endl;
-		//		for (int u = 0; u < 10; u++) {
-				//	cout << MatrixNeuron[SizeValSloy - 1].Neuron[u] << "  ";
-		//	}
-
-		//	cout << " ttttttttt " << endl;
-				//////////
+	
 			
 			if(MatrixNeuron[SizeValSloy - 1].sizeMatrix == 1) {
 				if (Optimizator != NullO) {
@@ -167,7 +165,7 @@ void Tensor::StartTeachSession(double SpeedTeach, int PacketSet, DataNeuron& Dat
 					StartTrainingSet(Data.CorrectVal[j], FunErr);
 				}
 			}
-			else if (!SetCorrectVal(Data.CorrectVal[j], Val)) {
+			else if (!SetCorrectVal(Data.CorrectVal[j])) {
 
 				if (Optimizator != NullO) {
 					StartTrainingSet(Data.CorrectVal[j], FunErr, Optimizator);
@@ -199,12 +197,25 @@ void Tensor::StartTeachSession(double SpeedTeach, int PacketSet, DataNeuron& Dat
 		}
 		SetFlagPacket = 0;
 		if (!(MatrixNeuron[SizeValSloy - 1].sizeMatrix == 1)) {
+			double val = 0;
+			for (int j = 0; j < Data.SizeData; j++) {
+				LoadData(Data.SetData[j]);
+				StartDirectBase();
+				SetCorrectVal(Data.CorrectVal[j], val);
+				for (int i = 0; i < SizeValSloy; i++) {
+					MatrixNeuron[i].NeuronSetNulL();
+				}
+				
+
+			}
 			cout << endl;
-			cout << "Epoch (" << h << "): " << (Val / Data.SizeData) * 100 << "%" << "\n";
+			cout << "Epoch (" << h << "): " << (val / Data.SizeData) * 100 << "%" << "\n";
+		}
+		else {
+			cout << "Epoch (" << h << "):\n ";
+
 		}
 
-
-		Val = 0;
 	}
 	cout << endl;
 	cout << "End Teach Tensor\n";
@@ -288,20 +299,13 @@ void Tensor::StartTeachSession(double SpeedTeach, int PacketSet, DataNeuron& Dat
 		MatrixBios[i].InitErrBios();
 	}
 	int SetFlagPacket = 0;
-	double Val = 0;
+	
 	for (int h = 0; h < epoch; h++) {
 		for (int j = 0; j < Data.SizeData; j++) {
 
 			LoadData(Data.SetData[j]);
 			StartDirect();
-			/////.....
-	//	cout << "ttttttttt "<<endl;
-		//		for (int u = 0; u < 10; u++) {
-				//	cout << MatrixNeuron[SizeValSloy - 1].Neuron[u] << "  ";
-		//	}
-
-		//	cout << " ttttttttt " << endl;
-				//////////
+	
 
 			if (MatrixNeuron[SizeValSloy - 1].sizeMatrix == 1) {
 				if (Optimizator != NullO) {
@@ -312,7 +316,7 @@ void Tensor::StartTeachSession(double SpeedTeach, int PacketSet, DataNeuron& Dat
 				}
 			}
 
-			else if (!SetCorrectVal(Data.CorrectVal[j], Val)) {
+			else if (!SetCorrectVal(Data.CorrectVal[j])) {
 
 				if (Optimizator != NullO) {
 					StartTrainingSet(Data.CorrectVal[j], FunErr, Optimizator);
@@ -353,14 +357,36 @@ void Tensor::StartTeachSession(double SpeedTeach, int PacketSet, DataNeuron& Dat
 
 		}
 		SetFlagPacket = 0;
+
+
 		if (!(MatrixNeuron[SizeValSloy - 1].sizeMatrix == 1)) {
+			double val = 0;
+			for (int j = 0; j < Data.SizeData; j++) {
+				LoadData(Data.SetData[j]);
+				StartDirectBase();
+				SetCorrectVal(Data.CorrectVal[j], val);
+				for (int i = 0; i < SizeValSloy; i++) {
+					MatrixNeuron[i].NeuronSetNulL();
+				}
+			
+
+			}
 			cout << endl;
-			cout << "Epoch (" << h << "): " << (Val / Data.SizeData) * 100 << "%" << "\n";
+			cout << "Epoch (" << h << "): " << (val / Data.SizeData) * 100 << "%" << "\n";
 		}
+		else {
+			cout << "Epoch (" << h << "):\n ";
+
+		}
+
+
+	
+
+		
 		
 
 
-		Val = 0;
+		
 	}
 	cout << endl;
 	cout << "End Teach Tensor\n";
@@ -396,7 +422,7 @@ void Tensor::LoadParametsNeurons(string pathW , string pathB) {
 	fstream outW;
 	fstream outB;
 	outW.open(pathW);
-	outB.open(pathW);
+	outB.open(pathB);
 	if (!outW.is_open()) {
 		cout << endl;
 		cout << "Error open File...";
@@ -442,7 +468,7 @@ void Tensor::StartDirectSession(DataNeuron& Data, void (*set_function)(double* s
 		}
 	}
 }
-bool Tensor::SetCorrectVal(double* SetCorrect, double& val) {
+bool Tensor::SetCorrectVal(double* SetCorrect) {
 
 
 
@@ -459,7 +485,7 @@ bool Tensor::SetCorrectVal(double* SetCorrect, double& val) {
 	
 	}
 	if ((int)SetCorrect[number]==1) {
-		val += 1;
+		
 		return true;
 
 	}
@@ -467,6 +493,34 @@ bool Tensor::SetCorrectVal(double* SetCorrect, double& val) {
 		return false;
 	}
 }
+
+void Tensor::SetCorrectVal(double* SetCorrect, double& val) {
+
+
+
+	int number = 0;
+	///???
+	double max = MatrixNeuron[SizeValSloy - 1].Neuron[0];
+	for (int i = 0; i < MatrixNeuron[SizeValSloy - 1].sizeMatrix - 1; i++) {
+
+		if (MatrixNeuron[SizeValSloy - 1].Neuron[i + 1] > max) {
+			number = (i + 1);
+			max = MatrixNeuron[SizeValSloy - 1].Neuron[i + 1];
+		}
+
+
+	}
+	if ((int)SetCorrect[number] == 1) {
+		val += 1;
+		
+
+	}
+	else {
+		
+	}
+}
+
+
 Tensor::~Tensor() {
 	delete[] act;
 	delete[] MatrixBios;
@@ -481,7 +535,7 @@ double** RegressionModel::TransportMat(double** mat, int col, int str) {
 		matT[i] = new double[str];
 	for (int i = 0; i < col; i++) {
 		for (int j = 0; j < str; j++) {
-			matT[i][j] = mat[i][j];
+			matT[i][j] = mat[j][i];
 		}
 	}
 
@@ -490,6 +544,7 @@ double** RegressionModel::TransportMat(double** mat, int col, int str) {
 }
 void RegressionModel::SetWheightsBParamets(DataRegression& dataReg) {
 	double** xT = TransportMat(dataReg.X, dataReg.SizeParametrs, dataReg.SizeExperiens);
+
 	double** mat = MultiMatrix(xT, dataReg.X, dataReg.SizeParametrs, dataReg.SizeExperiens, dataReg.SizeParametrs, dataReg.SizeExperiens);
 	if (mat == 0) {
 		cout << endl;
@@ -535,6 +590,41 @@ void RegressionModel::SetWheightsBParamets(DataRegression& dataReg) {
 
 	}
 }
+
+void RegressionModel::SetRcriteria(DataRegression& dataReg) {
+	double Qr = 0;
+	double Qe = 0;
+	double Mid=0;
+	for (int i = 0; i < dataReg.SizeExperiens; i++) {
+		double Val = 0;
+		for (int j = 0; j < dataReg.SizeParametrs; j++) {
+			
+			Val += dataReg.X[i][j] * dataReg.b[j][0];
+
+		}
+		Mid += Val;
+
+	}
+	Mid = Mid / (double)dataReg.SizeExperiens;
+
+
+	for (int i = 0; i < dataReg.SizeExperiens; i++) {
+		double Val = 0;
+		for (int j = 0; j < dataReg.SizeParametrs; j++) {
+
+			Val += dataReg.X[i][j] * dataReg.b[j][0];
+
+		}
+		Qe += pow((dataReg.Y[i][0] - Val), 2);
+		Qr += pow((dataReg.Y[i][0] - Mid), 2);
+
+	}
+	cout << "\n";
+	cout << "R Criteria: " << Qr / (Qe + Qr);
+	cout << "\n";
+}
+
+
 double RegressionModel::def_SetMatrixAlgibration(double** a, int Size, int i, int j) {
 	const int size = Size - 1;
 	double Amod;
@@ -567,7 +657,9 @@ double RegressionModel::def_SetMatrixAlgibration(double** a, int Size, int i, in
 	return Amod;
 	}
 double RegressionModel::def_determination(double** M, int size) {
-
+	if (size == 1) {
+		return M[0][0];
+	}
 	double SumA = 0;
 	if (size != 2) {
 		double** A = new double* [size - 1];
@@ -621,7 +713,7 @@ double** RegressionModel::MultiMatrix(double** M1, double** M2, int str1, int co
 			Mat[i] = new double[col2];
 		}
 		for (int i = 0; i < str1; i++) {
-			for (int j = 0; j < str1; j++) {
+			for (int j = 0; j < col2; j++) {
 				Mat[i][j] = 0;
 			}
 

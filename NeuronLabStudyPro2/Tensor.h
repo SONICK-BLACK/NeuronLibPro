@@ -30,7 +30,8 @@ namespace Tsr {
 
 		void StartGradient(int PacketSet, double SpeedTeach);
 		void StartGradient(int PacketSet, double SpeedTeach, Regulizators regulizator, int SizeObservations);
-		bool SetCorrectVal(double* SetCorrect, double& val);
+		bool SetCorrectVal(double* SetCorrect);
+		void SetCorrectVal(double* SetCorrect, double& val);
 
 	public:
 
@@ -56,6 +57,7 @@ namespace Tsr {
 		double** MultiMatrix(double** M1, double** M2, int str1, int col1, int col2, int str2);
 	public:
 		void SetWheightsBParamets(DataRegression& dataReg);
+		void SetRcriteria(DataRegression& dataReg);
 	
 
 	};
