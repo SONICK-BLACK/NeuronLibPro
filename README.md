@@ -1,1 +1,1 @@
-# NeuronLabStudyPro
+# NeuronLibPro
