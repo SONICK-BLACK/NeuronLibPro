@@ -128,6 +128,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\..\..\VS\EditorImage\EditorImage\Image.cpp" />
     <ClCompile Include="BiosClass.cpp" />
     <ClCompile Include="DataNeuron.cpp" />
     <ClCompile Include="Function.cpp" />
@@ -139,6 +140,7 @@
     <ClCompile Include="WheightClass.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\..\..\VS\EditorImage\EditorImage\Image.h" />
     <ClInclude Include="BiosClass.h" />
     <ClInclude Include="DataHyperParametr.h" />
     <ClInclude Include="DataNeuron.h" />

@@ -4,6 +4,7 @@
 #include"DataNeuron.h"
 #include "Tensor.h"
 #include"Pandos.h"
+#include "Image.h"
 #include <span>
 
 
@@ -180,6 +181,8 @@ int main()
 
       }
       */
+    img::Image im("lady.bmp");
+    im.WriteImage("lady2.bmp");
  /*   int sizeData = 100;
     Pandos pn("accident.csv", sizeData);
     pn.SetMidleData();

@@ -1,0 +1,24 @@
+﻿  EditorImage.cpp
+B:\Work\VS\EditorImage\EditorImage\EditorImage.cpp(8,6): warning C4326: возвращаемый тип "main" должен быть "int", а не "void"
+  Image.cpp
+B:\Work\VS\EditorImage\EditorImage\Image.cpp(475,53): warning C4244: инициализация: преобразование "double" в "size_t", возможна потеря данных
+B:\Work\VS\EditorImage\EditorImage\Image.cpp(477,53): warning C4244: инициализация: преобразование "double" в "size_t", возможна потеря данных
+B:\Work\VS\EditorImage\EditorImage\Image.cpp(507,76): warning C4244: =: преобразование "double" в "int", возможна потеря данных
+B:\Work\VS\EditorImage\EditorImage\Image.cpp(528,58): warning C4244: =: преобразование "double" в "int", возможна потеря данных
+B:\Work\VS\EditorImage\EditorImage\Image.cpp(548,56): warning C4244: =: преобразование "double" в "int", возможна потеря данных
+B:\Work\VS\EditorImage\EditorImage\Image.cpp(549,54): warning C4244: =: преобразование "double" в "int", возможна потеря данных
+B:\Work\VS\EditorImage\EditorImage\Image.cpp(568,94): warning C4244: =: преобразование "double" в "int", возможна потеря данных
+B:\Work\VS\EditorImage\EditorImage\Image.cpp(1653,32): warning C4244: =: преобразование "double" в "int", возможна потеря данных
+B:\Work\VS\EditorImage\EditorImage\Image.cpp(1734,51): warning C4244: +=: преобразование "double" в "int", возможна потеря данных
+B:\Work\VS\EditorImage\EditorImage\Image.cpp(1814,51): warning C4244: +=: преобразование "double" в "int", возможна потеря данных
+B:\Work\VS\EditorImage\EditorImage\Image.cpp(1846,31): warning C4244: инициализация: преобразование "double" в "size_t", возможна потеря данных
+B:\Work\VS\EditorImage\EditorImage\Image.cpp(1848,26): warning C4244: инициализация: преобразование "double" в "size_t", возможна потеря данных
+B:\Work\VS\EditorImage\EditorImage\Image.cpp(1856,34): warning C4244: =: преобразование "double" в "int", возможна потеря данных
+B:\Work\VS\EditorImage\EditorImage\Image.cpp(1868,27): warning C4244: =: преобразование "double" в "int", возможна потеря данных
+B:\Work\VS\EditorImage\EditorImage\Image.cpp(1869,26): warning C4244: =: преобразование "double" в "int", возможна потеря данных
+B:\Work\VS\EditorImage\EditorImage\Image.cpp(1885,31): warning C4244: инициализация: преобразование "double" в "size_t", возможна потеря данных
+B:\Work\VS\EditorImage\EditorImage\Image.cpp(1887,26): warning C4244: инициализация: преобразование "double" в "size_t", возможна потеря данных
+B:\Work\VS\EditorImage\EditorImage\Image.cpp(1903,27): warning C4244: =: преобразование "double" в "int", возможна потеря данных
+B:\Work\VS\EditorImage\EditorImage\Image.cpp(1904,26): warning C4244: =: преобразование "double" в "int", возможна потеря данных
+  Создание кода...
+  EditorImage.vcxproj -> B:\Work\VS\EditorImage\x64\Debug\EditorImage.exe

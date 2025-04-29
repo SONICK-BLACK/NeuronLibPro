@@ -1,2 +1,32 @@
-﻿  NeuronLabStudyPro2.cpp
+﻿C:\Program Files\Microsoft Visual Studio\2022\Community\MSBuild\Microsoft\VC\v170\Microsoft.CppBuild.targets(531,5): warning MSB8028: промежуточный каталог (x64\Debug\) содержит файлы, которые используются совместно с другим проектом (EditorImage.vcxproj).  Это может привести к ошибкам очистки и перестроения.
+  Image.cpp
+B:\Work\VS\EditorImage\EditorImage\Image.cpp(475,53): warning C4244: инициализация: преобразование "double" в "size_t", возможна потеря данных
+B:\Work\VS\EditorImage\EditorImage\Image.cpp(477,53): warning C4244: инициализация: преобразование "double" в "size_t", возможна потеря данных
+B:\Work\VS\EditorImage\EditorImage\Image.cpp(507,76): warning C4244: =: преобразование "double" в "int", возможна потеря данных
+B:\Work\VS\EditorImage\EditorImage\Image.cpp(528,58): warning C4244: =: преобразование "double" в "int", возможна потеря данных
+B:\Work\VS\EditorImage\EditorImage\Image.cpp(548,56): warning C4244: =: преобразование "double" в "int", возможна потеря данных
+B:\Work\VS\EditorImage\EditorImage\Image.cpp(549,54): warning C4244: =: преобразование "double" в "int", возможна потеря данных
+B:\Work\VS\EditorImage\EditorImage\Image.cpp(568,94): warning C4244: =: преобразование "double" в "int", возможна потеря данных
+B:\Work\VS\EditorImage\EditorImage\Image.cpp(1653,32): warning C4244: =: преобразование "double" в "int", возможна потеря данных
+B:\Work\VS\EditorImage\EditorImage\Image.cpp(1734,51): warning C4244: +=: преобразование "double" в "int", возможна потеря данных
+B:\Work\VS\EditorImage\EditorImage\Image.cpp(1814,51): warning C4244: +=: преобразование "double" в "int", возможна потеря данных
+B:\Work\VS\EditorImage\EditorImage\Image.cpp(1846,31): warning C4244: инициализация: преобразование "double" в "size_t", возможна потеря данных
+B:\Work\VS\EditorImage\EditorImage\Image.cpp(1848,26): warning C4244: инициализация: преобразование "double" в "size_t", возможна потеря данных
+B:\Work\VS\EditorImage\EditorImage\Image.cpp(1856,34): warning C4244: =: преобразование "double" в "int", возможна потеря данных
+B:\Work\VS\EditorImage\EditorImage\Image.cpp(1868,27): warning C4244: =: преобразование "double" в "int", возможна потеря данных
+B:\Work\VS\EditorImage\EditorImage\Image.cpp(1869,26): warning C4244: =: преобразование "double" в "int", возможна потеря данных
+B:\Work\VS\EditorImage\EditorImage\Image.cpp(1885,31): warning C4244: инициализация: преобразование "double" в "size_t", возможна потеря данных
+B:\Work\VS\EditorImage\EditorImage\Image.cpp(1887,26): warning C4244: инициализация: преобразование "double" в "size_t", возможна потеря данных
+B:\Work\VS\EditorImage\EditorImage\Image.cpp(1903,27): warning C4244: =: преобразование "double" в "int", возможна потеря данных
+B:\Work\VS\EditorImage\EditorImage\Image.cpp(1904,26): warning C4244: =: преобразование "double" в "int", возможна потеря данных
+  DataNeuron.cpp
+  NeuronClass.cpp
+  NeuronLabStudyPro2.cpp
+  Pandos.cpp
+B:\Work\LocalProject\VS\NeuronLabStudyPro2\NeuronLabStudyPro2\Pandos.cpp(75,53): warning C4267: аргумент: преобразование из "size_t" в "int"; возможна потеря данных
+  TasksNetwork.cpp
+  Tensor.cpp
+B:\Work\LocalProject\VS\NeuronLabStudyPro2\NeuronLabStudyPro2\Tensor.cpp(532,9): warning C4101: val: неиспользованная локальная переменная
+  Создание кода...
+B:\Work\LocalProject\VS\NeuronLabStudyPro2\NeuronLabStudyPro2\Pandos.cpp(232,1): warning C4715: Pandos::SetStringint: значение возвращается не при всех путях выполнения
   NeuronLabStudyPro2.vcxproj -> B:\Work\LocalProject\VS\NeuronLabStudyPro2\x64\Debug\NeuronLabStudyPro2.exe
