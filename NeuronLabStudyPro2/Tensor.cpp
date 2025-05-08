@@ -193,7 +193,8 @@ void Tensor::StartTeachSession(double SpeedTeach, int PacketSet, DataNeuron& Dat
 			for (int i = 0; i < SizeValSloy; i++) {
 				MatrixNeuron[i].NeuronSetNull();
 			}
-
+			cout << endl;
+			cout << 1;
 		}
 		SetFlagPacket = 0;
 		if (!(MatrixNeuron[SizeValSloy - 1].sizeMatrix == 1)) {

@@ -52,14 +52,17 @@ Pandos::Pandos(string path, int SizeData) {
 				i += 1;
 				continue;
 			}
+			//remake
 			if (!(Dat.find('"') == string::npos)) {
 				string val;
 				getline(StreamDataStr, val, '"');
 				Dat += val;
 				Dat += '"';
+		
 				
 				getline(StreamDataStr, val, ',');
 				Dat += val;
+			
 				Data[g][VectorParamets[i]] = Dat;
 			
 				if (F2) {
@@ -287,7 +290,7 @@ void Pandos::SubstitutionNullParamets(int b[]) {
 	}
 
 }
-
+//Overload is needed
 void Pandos::SetMormolazeDataOfOne(int b[]) {
 	for (int i = 0; i < ValParamets; i++) {
 		double max=any_cast<double>(Data[0][VectorParamets[i]]);

@@ -11,6 +11,7 @@
 using namespace std;
 using namespace Tsr;
 using namespace Data;
+using namespace img;
 int Val1 = 0;
 void ReadFile(string path, DataNeuron& dat, int Pixel, int InputSize) {
     fstream out;
@@ -37,6 +38,12 @@ void ReadFile(string path, DataNeuron& dat, int Pixel, int InputSize) {
     cout << "End Read File\n";
     out.close();
 }
+//void InitData(DataNeuron& dat, int InputSize, int Pixel, int) {
+    
+
+
+//}
+
 void SetDatasetData(DataNeuron& dat, Pandos& Pn, int SizeData) {
     for (int i = 0; i < SizeData; i++) {
         for (int j = 0; j < Pn.ValParamets-1; j++) {
@@ -181,8 +188,7 @@ int main()
 
       }
       */
-    img::Image im("lady.bmp");
-    im.WriteImage("lady2.bmp");
+   
  /*   int sizeData = 100;
     Pandos pn("accident.csv", sizeData);
     pn.SetMidleData();
@@ -236,44 +242,151 @@ int main()
 
 
     */
-int sizeDat=5;
-int valpar=4;
-Pandos pn("house.csv", sizeDat);
-pn.SetDiversity();
-for (int j = 0; j < pn.ValParamets; j++) {
-    cout << pn.VectorParamets[j] << ": ";
-    for (int i = 0; i < pn.ListDatDiversity[pn.VectorParamets[j]].size(); i++) {
-        cout << any_cast<double>(pn.ListDatDiversity[pn.VectorParamets[j]][i]) << " ";
 
-    }
-    cout << "\n";
+int Pixel = 900;
+string path;
+
+///NormolaizeData
+
+for (int i = 1; i < 61; i++) {
+   
+
+    path = "B:/Work/LocalProject/VS/NeuronLabStudyPro2/NeuronLabStudyPro2/CatFiles/Cat";
+    path += to_string(i);
+    path += ".bmp";
+    
+    img::Image im(&path[0]);
+    im.SmoothFilt();
+   im.contourBlack(img::Prefity, img::InR);
+
+
+ im.ScaleImage(30, 30);
+    
+    path = "B:/Work/LocalProject/VS/NeuronLabStudyPro2/NeuronLabStudyPro2/DataCat/Cat";
+    path += to_string(i);
+    path += ".bmp";
+    im.WriteImage(&path[0]);
+
 }
-cout << "\n";
-cout<<any_cast<double>(pn.SetModa("Area"));
+for (int i = 1; i < 61; i++) {
 
-cout << "\n";
-DataRegression rg(valpar, sizeDat);
-for (int i = 0; i < sizeDat; i++) {
-    for (int j = 1; j < valpar; j++) {
-        rg.X[i][j] = any_cast<double>(pn(i, pn.VectorParamets[j]));
-     
-    }
 
-  rg.Y[i][0] = any_cast<double>(pn.Data[i]["Price"]);
+    path = "B:/Work/LocalProject/VS/NeuronLabStudyPro2/NeuronLabStudyPro2/ParrotFiles/Parrot";
+    path += to_string(i);
+    path += ".bmp";
+
+    img::Image im(&path[0]);
+    im.SmoothFilt();
+    im.contourBlack(img::Prefity, img::InR);
+
+
+    im.ScaleImage(30, 30);
+
+    path = "B:/Work/LocalProject/VS/NeuronLabStudyPro2/NeuronLabStudyPro2/DataParrot/Parrot";
+    path += to_string(i);
+    path += ".bmp";
+    im.WriteImage(&path[0]);
+
+}
+for (int i = 1; i < 11; i++) {
+
+
+    path = "B:/Work/LocalProject/VS/NeuronLabStudyPro2/NeuronLabStudyPro2/TestFiles/Cat";
+    path += to_string(i);
+    path += ".bmp";
+
+    img::Image im(&path[0]);
+    im.SmoothFilt();
+    im.contourBlack(img::Prefity, img::InR);
+
+
+    im.ScaleImage(30, 30);
+
+    path = "B:/Work/LocalProject/VS/NeuronLabStudyPro2/NeuronLabStudyPro2/DataTest/Cat";
+    path += to_string(i);
+    path += ".bmp";
+    im.WriteImage(&path[0]);
+
+}
+for (int i = 1; i < 11; i++) {
+
+
+    path = "B:/Work/LocalProject/VS/NeuronLabStudyPro2/NeuronLabStudyPro2/TestFiles/Parrot";
+    path += to_string(i);
+    path += ".bmp";
+
+    img::Image im(&path[0]);
+    im.SmoothFilt();
+    im.contourBlack(img::Prefity, img::InR);
+
+
+    im.ScaleImage(30, 30);
+
+    path = "B:/Work/LocalProject/VS/NeuronLabStudyPro2/NeuronLabStudyPro2/DataTest/Parrot";
+    path += to_string(i);
+    path += ".bmp";
+    im.WriteImage(&path[0]);
 
 }
 
-RegressionModel reg;
-reg.SetWheightsBParamets(rg);
-cout << "\n";
-for (int j = 0; j < valpar; j++) {
-    cout << rg.b[j][0];
-    cout << "\n";
-}
+///
 
-reg.SetRcriteria(rg);
+//0-cat. 1-Parrot
+DataNeuron data(120, Pixel, 2);
+
+int Cat = 1;
+int Parrot = 1;
+for (int i = 0; i < 120; i++) {
+    
+    int k = 0;
+        if (!(i%2)) {
+            path = "B:/Work/LocalProject/VS/NeuronLabStudyPro2/NeuronLabStudyPro2/DataCat/Cat";
+            path += to_string(Cat);
+            path += ".bmp";
+            img::Image* im =new Image(&path[0]);
+            for (int j = 0; j < 30; j++) {
+                for (int l = 0; l < 30; l++) {
+                    data.SetData[i][k] = im->data.rgb[j][l].RGB[0]/250.0;
+                    k += 1;
+               }
+            }
+            data.CorrectVal[i][0] = 1.0;
+            data.CorrectVal[i][1] = 0.0;
+            delete im;
+            Cat += 1;
+
+        }
+        else {
+            
+            path = "B:/Work/LocalProject/VS/NeuronLabStudyPro2/NeuronLabStudyPro2/DataParrot/Parrot";
+            path += to_string(Parrot);
+            path += ".bmp";
+            img::Image* im = new Image(&path[0]);
+            for (int j = 0; j < 30; j++) {
+                for (int l = 0; l < 30; l++) {
+                 
+                    data.SetData[i][k] = im->data.rgb[j][l].RGB[0] / 250.0;
+                    k += 1;
+                }
+            }
+            data.CorrectVal[i][0] = 0.0;
+            data.CorrectVal[i][1] = 1.0;
+            delete im;
+            Parrot += 1;
+        }
+        
 
    
+    }
+const ActFuns Funns[] = { ReLU,Softmax };
+const int ArrSize[] = { Pixel,300,2 };
+
+Tensor T(3, ArrSize, Funns);
+
+
+
+T.StartTeachSession(0.001, 1, data, MSR, 2, rmsprop, NullR);
+
 
 }
 

@@ -27,9 +27,10 @@ namespace img {
 class Image
 {
 private:
-	imageData data;
+	
 	double funP(double x, double x1, double x2, double y1, double y2);
 public:
+	imageData data;
 	Image(const char str[]);
 	void ZoomImage(int xPos, int yPos);
 	void ScaleImage(int cov);
