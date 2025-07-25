@@ -129,7 +129,10 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\..\..\..\VS\EditorImage\EditorImage\Image.cpp" />
+    <ClCompile Include="Batch.cpp" />
     <ClCompile Include="BiosClass.cpp" />
+    <ClCompile Include="BiosCNN.cpp" />
+    <ClCompile Include="Cores.cpp" />
     <ClCompile Include="DataNeuron.cpp" />
     <ClCompile Include="Function.cpp" />
     <ClCompile Include="NeuronClass.cpp" />
@@ -141,7 +144,10 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\..\VS\EditorImage\EditorImage\Image.h" />
+    <ClInclude Include="Batch.h" />
     <ClInclude Include="BiosClass.h" />
+    <ClInclude Include="BiosCNN.h" />
+    <ClInclude Include="Cores.h" />
     <ClInclude Include="DataHyperParametr.h" />
     <ClInclude Include="DataNeuron.h" />
     <ClInclude Include="Function.h" />

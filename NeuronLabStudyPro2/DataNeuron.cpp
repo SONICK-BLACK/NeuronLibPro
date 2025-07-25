@@ -59,3 +59,27 @@ DataRegression::~DataRegression() {
 	}
 	
 }
+DataCNN::DataCNN(int SizeData,int OutSize, int chanell) {
+	this->SizeData = SizeData;
+	this->chanell = chanell;
+	this->OutSize = OutSize;
+	Grid = new Batch*[SizeData];
+	for (int i = 0; i < SizeData; i++) {
+		Grid[i] = new Batch[chanell];
+	}
+	CorrectVal = new double* [SizeData];
+	for (int i = 0; i < SizeData; i++) {
+		CorrectVal[i] = new double[OutSize];
+	}
+}
+DataCNN::~DataCNN() {
+	for (int i = 0; i < SizeData; i++) {
+		delete[] Grid[i];
+	}
+	delete[] Grid;
+
+	for (int i = 0; i < SizeData; i++) {
+		delete[] CorrectVal[i];
+	}
+	delete[] CorrectVal;
+}

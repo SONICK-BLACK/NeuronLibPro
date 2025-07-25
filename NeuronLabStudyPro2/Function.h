@@ -3,7 +3,7 @@
 enum OptimizaterGradient { NullO = 0, Momentum=1, rmsprop, Adam};
 enum Regulizators { NullR = 0, L1=1, L2, ElasticNet};
 enum ActFuns {
-	Sigmoida = 1, ReLU = 2, Softmax = 3, HypTang
+	Sigmoida = 1, ReLU = 2, Softmax = 3, HypTang=4, ReLUCNN=5
 };
 enum ErrFuns
 {

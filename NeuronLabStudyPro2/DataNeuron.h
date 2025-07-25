@@ -1,4 +1,5 @@
 #pragma once
+#include "Batch.h"
 namespace Data {
 	class DataNeuron
 	{
@@ -21,5 +22,15 @@ namespace Data {
 		~DataRegression();
 	};
 
+	class DataCNN {
+	public:
+		Batch** Grid;
+		int SizeData;
+		int chanell;
+		double** CorrectVal;
+		int OutSize;
+		DataCNN(int SizeData, int OutSize, int chanell);
+		~DataCNN();
+	};
 }
 

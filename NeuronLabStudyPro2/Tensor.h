@@ -5,6 +5,8 @@
 #include "Function.h"
 #include"TasksNetwork.h"
 #include"DataNeuron.h"
+#include"Cores.h"
+#include"Batch.h"
 #include"DataHyperParametr.h"
 #include<iostream>
 #include<fstream>
@@ -14,38 +16,82 @@ using namespace Data;
 
 
 namespace Tsr {
+
+
+
+
 	class Tensor
 	{
+		friend class CNN;
 	private:
 		WheightClass* MatrixWheight;
 		BiosClass* MatrixBios;
 		NeuronClass* MatrixNeuron;
 		ActFuns* act;
 		int SizeValSloy;
+		void StartDirectSessionCNNBase(double* Data, double& val, double* Correctval);
 		void StartDirect();
 		void StartDirectBase();
 		void LoadData(double* Data);
 		void StartTrainingSet(double* VectorRight, ErrFuns erF);
 		void StartTrainingSet(double* VectorRight, ErrFuns erF, OptimizaterGradient Optimizator);
-
+		
 		void StartGradient(int PacketSet, double SpeedTeach);
 		void StartGradient(int PacketSet, double SpeedTeach, Regulizators regulizator, int SizeObservations);
 		bool SetCorrectVal(double* SetCorrect);
 		void SetCorrectVal(double* SetCorrect, double& val);
-
+		bool StartTeachSessionÑNN(double SpeedTeach, int PacketSet, DataNeuron& Data, ErrFuns FunErr, int epoch, double* VectorErr, int t);
+		void StartTrainingSetCNN(double* VectorRight, ErrFuns erF, double* ErrVector);
+		void InitClassesErr();
 	public:
 
 
 		Tensor(int VallSloy, const int ArrSizeSloy[], const ActFuns ActFunc[]); //Standart Pepzetron;
 		void SaveParametsNeurons(string pathW = "wheight.txt", string pathB = "bios.txt");
 		void LoadParametsNeurons(string pathW = "wheight.txt", string pathB = "bios.txt");
+
 		void StartTeachSession(double SpeedTeach, int PacketSet, DataNeuron& Data, ErrFuns FunErr, int epoch);
 		void StartTeachSession(double SpeedTeach, int PacketSet, DataNeuron& Data, ErrFuns FunErr, int epoch, OptimizaterGradient Optimizator, Regulizators regulizator);
 		void StartTeachSession(double SpeedTeach, int PacketSet, DataNeuron& Data, ErrFuns FunErr, int epoch, OptimizaterGradient Optimizator, Regulizators regulizator, bool StochasticSpeed);
 		void StartDirectSession(DataNeuron& Data, void (*set_function)(double* setNeuron));
 		void StartDirectSession(DataNeuron& Data, void (*set_function)(double* setNeuron, double* SetCorectVal));
-
+		void StartDirectSession(double* Data, void (*set_function)(double* setNeuron));
 		~Tensor();
+
+	};
+
+	class CNN {
+
+	private:
+		int SizeOutNeurons;
+		Tensor* localPepzetron;
+		BiosCNN** bios;
+		Cores*** ñores;//Cores in layers
+		bool SetInit = false;
+		int ValBat; //number of batches in the output convolutional layer
+		Batch** batñh;//Many Batches are there in total
+		Batch** batñhMax;// Many Batches are there in total
+		int chanels; //Many color channels
+		int* valCore;//cores for 1 batch in each layer
+		int sloys;//many layers
+		int Step;//The scan step
+		void InputMat(Batch& MatBatch, int MaxSet);
+		void VectorSweep(Batch* Grid, int valBat, double* VectorOutput);
+		void SweepBatches(Batch* Grid, int SizeGridX, int SizeGridY);
+		void VectorErrToMatrix(double* VectorErr, Batch* Batch, int valBat);
+		int InitBatches(int SizeGridX, int SizeGridY);
+		void StrartGradientCore(int PacketVal, double SpeedTeach);
+		void NullBatchSet();
+		void DirectCnnBase(DataCNN& GridData);
+	public:
+		//We make the same size of cores for the entire layer.
+
+		int* PollingVal;
+		CNN(int chanels, int  valCore[], int sloys, int** SizeCore, int Step);
+		void StartTrainingCNN(DataCNN& GridData, int VallSloy, int ArrSizeSloy[], const ActFuns ActFunc[], double SpeedTeach, int PacketSet, ErrFuns FunErr, int epoch);
+		void StartDirectCNN(Batch* Grid, void (*set_function)(double* SetOutput), int VallSloy, const int ArrSizeSloy[], const ActFuns ActFunc[]);
+		//void StartTrainingCNN(double*** Grid, int SizeGridX, int SizeGridY, int SetPadding[], int SetMaxPooling[], double SpeedTeach, int PacketSet, DataNeuron& Data, ErrFuns FunErr, int epoch, OptimizaterGradient Optimizator, Regulizators regulizator);
+		//void StartTrainingCNN(double*** Grid, int SizeGridX, int SizeGridY, int SetPadding[], int SetMaxPooling[], double SpeedTeach, int PacketSet, DataNeuron& Data, ErrFuns FunErr, int epoch, OptimizaterGradient Optimizator, Regulizators regulizator, bool StochasticSpeed);
 
 	};
 	class RegressionModel {
@@ -61,4 +107,8 @@ namespace Tsr {
 	
 
 	};
+
+	void TestCNNModel(int chanels, int  valCore[], int sloys, int*** SizeCore, int Step, int SizeGridX, int SizeGridY);
+
+	
 }

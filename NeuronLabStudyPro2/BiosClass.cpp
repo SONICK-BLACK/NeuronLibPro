@@ -7,6 +7,7 @@ void BiosClass::InitBiosClass(int SizeBios, int SizeNeuron) {
 		Bios[i] = (rand() % 50) * 0.03 / (SizeNeuron + 15);
 	}
 }
+
 void BiosClass::InitErrBios() {
 	SetErrorBiosPacket = new double[SizeMatrix];
 	for (int i = 0; i < SizeMatrix; i++) {

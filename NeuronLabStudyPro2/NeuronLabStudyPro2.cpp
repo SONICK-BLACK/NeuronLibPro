@@ -13,6 +13,9 @@ using namespace Tsr;
 using namespace Data;
 using namespace img;
 int Val1 = 0;
+int channal = 3;
+DataCNN dataTest(20, 2, channal);
+int pup = 0;
 void ReadFile(string path, DataNeuron& dat, int Pixel, int InputSize) {
     fstream out;
     out.open(path);
@@ -38,12 +41,18 @@ void ReadFile(string path, DataNeuron& dat, int Pixel, int InputSize) {
     cout << "End Read File\n";
     out.close();
 }
-//void InitData(DataNeuron& dat, int InputSize, int Pixel, int) {
-    
-
-
-//}
-
+void Put(Batch& bat) {
+    fstream out;
+    out.open("123.txt");
+    if (!out.is_open()) {
+        cout << "Err" << endl;
+    }
+    for (int i = 0; i < bat.sizeY; i++) {
+        for (int l = 0; l < bat.sizeX; l++) {
+            out >> bat.batch[i][l];
+        }
+    }
+}
 void SetDatasetData(DataNeuron& dat, Pandos& Pn, int SizeData) {
     for (int i = 0; i < SizeData; i++) {
         for (int j = 0; j < Pn.ValParamets-1; j++) {
@@ -120,11 +129,44 @@ void OutputData1(double* OutNeuron, double* CorrectVal) {
     
     
 }
+void OutputData3(double* OutNeuron) {
+    int val;
+  //  cout << OutNeuron[1];
+  //  cout << endl;
+   // cout << OutNeuron[0];
+
+    if (OutNeuron[1] > OutNeuron[0]) {
+        val = 1;
+        
+        cout << "Output Data: " << "Parrot" << "\n";
+    }
+    if (OutNeuron[1] < OutNeuron[0]) {
+        val = 0;
+
+        cout << "Output Data: " << "Cat" << "\n";
+    }
+    
+    if (dataTest.CorrectVal[pup][val] == 1.0) {
+        Val1 += 1;
+
+
+    }
+    if (dataTest.CorrectVal[pup][0] == 0.0) {
+
+        cout << "Corect Data: " << "Parrot" << "\n";
+    }
+    else {
+
+        cout << "Corect Data: " << "Cat" << "\n";
+    }
+
+
+}
 
 
 int main()
 {
-
+    setlocale(LC_ALL, "Russian");
 /*  int t;
       cout << "Begin Study Network Neurons? If zero, load Paramets Neurons Network and Test (1/0)\n";
       cin >> t;
@@ -243,11 +285,11 @@ int main()
 
     */
 
-int Pixel = 900;
-string path;
+//int Pixel = 10000;
+//string path;
 
 ///NormolaizeData
-
+/*
 for (int i = 1; i < 61; i++) {
    
 
@@ -256,8 +298,8 @@ for (int i = 1; i < 61; i++) {
     path += ".bmp";
     
     img::Image im(&path[0]);
-    im.SmoothFilt();
-   im.contourBlack(img::Prefity, img::InR);
+  //  im.SmoothFilt();
+ //  im.contourBlack(img::Prefity, img::InR);
 
 
  im.ScaleImage(30, 30);
@@ -276,8 +318,8 @@ for (int i = 1; i < 61; i++) {
     path += ".bmp";
 
     img::Image im(&path[0]);
-    im.SmoothFilt();
-    im.contourBlack(img::Prefity, img::InR);
+   //  im.SmoothFilt();
+    // im.contourBlack(img::Prefity, img::InR);
 
 
     im.ScaleImage(30, 30);
@@ -296,8 +338,8 @@ for (int i = 1; i < 11; i++) {
     path += ".bmp";
 
     img::Image im(&path[0]);
-    im.SmoothFilt();
-    im.contourBlack(img::Prefity, img::InR);
+    //  im.SmoothFilt();
+    //  im.contourBlack(img::Prefity, img::InR);
 
 
     im.ScaleImage(30, 30);
@@ -316,8 +358,8 @@ for (int i = 1; i < 11; i++) {
     path += ".bmp";
 
     img::Image im(&path[0]);
-    im.SmoothFilt();
-    im.contourBlack(img::Prefity, img::InR);
+  //  im.SmoothFilt();
+  //  im.contourBlack(img::Prefity, img::InR);
 
 
     im.ScaleImage(30, 30);
@@ -328,27 +370,52 @@ for (int i = 1; i < 11; i++) {
     im.WriteImage(&path[0]);
 
 }
-
+*/
 ///
 
 //0-cat. 1-Parrot
-DataNeuron data(120, Pixel, 2);
+
+string path;
+DataCNN data(60, 2, channal);
 
 int Cat = 1;
 int Parrot = 1;
-for (int i = 0; i < 120; i++) {
+int k = 0;
+for (int i = 0; i < 60; i++) {
+    for (int y = 0; y < channal; y++) {
+        data.Grid[i][y](30, 30, 0, 0);
+    }
+}
+
+
+
+for (int i = 0; i < 20; i++) {
+    for (int y = 0; y < channal; y++) {
+        dataTest.Grid[i][y](30, 30, 0, 0);
+    }
+}
+
+for (int i = 0; i < 60; i++) {
     
-    int k = 0;
+    
         if (!(i%2)) {
             path = "B:/Work/LocalProject/VS/NeuronLabStudyPro2/NeuronLabStudyPro2/DataCat/Cat";
             path += to_string(Cat);
             path += ".bmp";
             img::Image* im =new Image(&path[0]);
-            for (int j = 0; j < 30; j++) {
-                for (int l = 0; l < 30; l++) {
-                    data.SetData[i][k] = im->data.rgb[j][l].RGB[0]/250.0;
-                    k += 1;
-               }
+            for (int y = 0; y < channal; y++) {
+                for (int j = 0; j < 30; j++) {
+                    for (int l = 0; l < 30; l++) {
+                        
+
+
+                            data.Grid[i][y].batch[j][l] = im->data.rgb[j][l].RGB[y]/255.0;
+                        
+
+
+                        k += 1;
+                    }
+                }
             }
             data.CorrectVal[i][0] = 1.0;
             data.CorrectVal[i][1] = 0.0;
@@ -362,11 +429,16 @@ for (int i = 0; i < 120; i++) {
             path += to_string(Parrot);
             path += ".bmp";
             img::Image* im = new Image(&path[0]);
-            for (int j = 0; j < 30; j++) {
-                for (int l = 0; l < 30; l++) {
-                 
-                    data.SetData[i][k] = im->data.rgb[j][l].RGB[0] / 250.0;
-                    k += 1;
+            for (int y = 0; y < channal; y++) {
+                for (int j = 0; j < 30; j++) {
+                    for (int l = 0; l < 30; l++) {
+
+
+                        data.Grid[i][y].batch[j][l] = im->data.rgb[j][l].RGB[y] / 255.0;
+
+
+                        k += 1;
+                    }
                 }
             }
             data.CorrectVal[i][0] = 0.0;
@@ -374,20 +446,117 @@ for (int i = 0; i < 120; i++) {
             delete im;
             Parrot += 1;
         }
-        
-
+      
    
     }
 const ActFuns Funns[] = { ReLU,Softmax };
-const int ArrSize[] = { Pixel,300,2 };
+int ArrSize[] = {0,220,2 };
+int ValCore[] = {1};
+int** SizeCore= new int*[1];
+SizeCore[0] = new int[2];
+//SizeCore[1] = new int[2];
+SizeCore[0][0] =3;
+SizeCore[0][1] = 3;
+//SizeCore[1][0] = 3;
+//SizeCore[1][1] = 3;
 
-Tensor T(3, ArrSize, Funns);
+CNN cnn(channal, ValCore, 1, SizeCore, 1);
+cnn.PollingVal = new int[1];
+cnn.PollingVal[0] = 2;
+//cnn.PollingVal[1] = 2;
+
+cnn.StartTrainingCNN(data, 3, ArrSize, Funns, 0.1, 1, MSR,47);
 
 
 
-T.StartTeachSession(0.001, 1, data, MSR, 2, rmsprop, NullR);
+
+ Cat = 1;
+ Parrot = 1;
+  k = 0;
+for (int i = 0; i < 20; i++) {
+
+   
+    if (!(i % 2)) {
+        path = "B:/Work/LocalProject/VS/NeuronLabStudyPro2/NeuronLabStudyPro2/DataTest/Cat";
+        path += to_string(Cat);
+        path += ".bmp";
+        img::Image* im = new Image(&path[0]);
+        for (int y = 0; y < channal; y++) {
+            for (int j = 0; j < 30; j++) {
+                for (int l = 0; l < 30; l++) {
 
 
+                    dataTest.Grid[i][y].batch[j][l] = im->data.rgb[j][l].RGB[y] / 255.0;
+
+
+                    k += 1;
+                }
+            }
+        }
+        dataTest.CorrectVal[i][0] = 1.0;
+        dataTest.CorrectVal[i][1] = 0.0;
+        delete im;
+        Cat += 1;
+
+    }
+    else {
+
+        path = "B:/Work/LocalProject/VS/NeuronLabStudyPro2/NeuronLabStudyPro2/DataTest/Parrot";
+        path += to_string(Parrot);
+        path += ".bmp";
+        img::Image* im = new Image(&path[0]);
+        for (int y = 0; y < channal; y++) {
+            for (int j = 0; j < 30; j++) {
+                for (int l = 0; l < 30; l++) {
+
+
+
+                    dataTest.Grid[i][y].batch[j][l] = im->data.rgb[j][l].RGB[y] / 255.0;
+
+                    k += 1;
+                }
+            }
+        }
+        dataTest.CorrectVal[i][0] = 0.0;
+        dataTest.CorrectVal[i][1] = 1.0;
+        delete im;
+        Parrot += 1;
+    }
+
+
+
+}
+for (int i = 0; i < 20; i++) {
+    cnn.StartDirectCNN(dataTest.Grid[i], OutputData3, 2, ArrSize, Funns);
+    pup += 1;
+}
+
+cout << endl;
+cout << (Val1 / 20.0) * 100;
+
+
+/*
+DataCNN data(1, 2, 3);
+data.Grid[0][0](12, 12, 0, 0);
+data.Grid[0][1](12, 12, 0, 0);
+data.Grid[0][2](12, 12, 0, 0);
+Put(data.Grid[0][0]);
+Put(data.Grid[0][1]);
+Put(data.Grid[0][2]);
+int ValCore[] = { 2,1 };
+int** SizeCore = new int* [2];
+SizeCore[0] = new int[2];
+SizeCore[1] = new int[2];
+SizeCore[0][0] = 3;
+SizeCore[0][1] = 3;
+SizeCore[1][0] = 3;
+SizeCore[1][1] = 3;
+CNN cnn(3, ValCore, 2, SizeCore, 1);
+cnn.PollingVal = new int[2];
+cnn.PollingVal[0] = 1;
+cnn.PollingVal[1] = 1;
+cnn.StartTrainingCNN(data);
+*/
 }
 
 

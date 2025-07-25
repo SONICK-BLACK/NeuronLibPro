@@ -27,9 +27,6 @@
     <ClCompile Include="Function.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
-    <ClCompile Include="Tensor.cpp">
-      <Filter>Исходные файлы</Filter>
-    </ClCompile>
     <ClCompile Include="TasksNetwork.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
@@ -43,6 +40,18 @@
       <Filter>Исходные файлы</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\..\VS\EditorImage\EditorImage\Image.cpp">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
+    <ClCompile Include="Cores.cpp">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
+    <ClCompile Include="Batch.cpp">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
+    <ClCompile Include="Tensor.cpp">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
+    <ClCompile Include="BiosCNN.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
   </ItemGroup>
@@ -75,6 +84,15 @@
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\..\VS\EditorImage\EditorImage\Image.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="Cores.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="Batch.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="BiosCNN.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
   </ItemGroup>
