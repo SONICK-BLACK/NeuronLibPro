@@ -22,6 +22,7 @@ public:
 	static void actChann(Batch* batchChan, BiosCNN* bios, int valChan);
 	static void EvalutionErrBatchToMax(Batch& batch, Batch& batchMax, Cores& core, int step);
 	static void ErrorTeachCores(Batch& batch, Batch& batchMax, Cores& core, BiosCNN& bios, int step);
+	static void ErrorTeachCores(Batch& batch, Batch& batchMax, Cores& core, BiosCNN& bios, int step, OptimizaterGradient Optimizator);
 	static void MaxPooling(Batch& batch, int val, Batch& batchMax);
 	static void DirectDirection(NeuronClass& Neuron1, NeuronClass& Neuron2,WheightClass& Wheight, BiosClass& Bios, ActFuns& funs);
 	static void  DirectDirectionBase(NeuronClass& Neuron1, NeuronClass& Neuron2, WheightClass& Wheight, BiosClass& Bios, ActFuns& funs);

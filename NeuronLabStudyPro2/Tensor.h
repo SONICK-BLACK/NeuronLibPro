@@ -40,8 +40,11 @@ namespace Tsr {
 		void StartGradient(int PacketSet, double SpeedTeach, Regulizators regulizator, int SizeObservations);
 		bool SetCorrectVal(double* SetCorrect);
 		void SetCorrectVal(double* SetCorrect, double& val);
+
 		bool StartTeachSession—NN(double SpeedTeach, int PacketSet, DataNeuron& Data, ErrFuns FunErr, int epoch, double* VectorErr, int t);
+		bool StartTeachSession—NN(double SpeedTeach, int PacketSet, DataNeuron& Data, ErrFuns FunErr, int epoch, OptimizaterGradient Optimizator, Regulizators regulizator, double* VectorErr, int t, int sizeData);
 		void StartTrainingSetCNN(double* VectorRight, ErrFuns erF, double* ErrVector);
+		void StartTrainingSetCNN(double* VectorRight, ErrFuns erF, double* ErrVector, OptimizaterGradient Optimizator);
 		void InitClassesErr();
 	public:
 
@@ -81,6 +84,7 @@ namespace Tsr {
 		void VectorErrToMatrix(double* VectorErr, Batch* Batch, int valBat);
 		int InitBatches(int SizeGridX, int SizeGridY);
 		void StrartGradientCore(int PacketVal, double SpeedTeach);
+		void StrartGradientCore(int PacketVal, double SpeedTeach, Regulizators regulizator, int SizeObservations);
 		void NullBatchSet();
 		void DirectCnnBase(DataCNN& GridData);
 	public:
@@ -89,9 +93,10 @@ namespace Tsr {
 		int* PollingVal;
 		CNN(int chanels, int  valCore[], int sloys, int** SizeCore, int Step);
 		void StartTrainingCNN(DataCNN& GridData, int VallSloy, int ArrSizeSloy[], const ActFuns ActFunc[], double SpeedTeach, int PacketSet, ErrFuns FunErr, int epoch);
+		void StartTrainingCNN(DataCNN& GridData, int VallSloy, int ArrSizeSloy[], const ActFuns ActFunc[], double SpeedTeach, int PacketSet, ErrFuns FunErr, int epoch, OptimizaterGradient Optimizator, Regulizators regulizator);
+		void StartTrainingCNN(DataCNN& GridData, int VallSloy, int ArrSizeSloy[], const ActFuns ActFunc[], double SpeedTeach, int PacketSet, ErrFuns FunErr, int epoch, OptimizaterGradient Optimizator, Regulizators regulizator, bool StochasticSpeed);
 		void StartDirectCNN(Batch* Grid, void (*set_function)(double* SetOutput), int VallSloy, const int ArrSizeSloy[], const ActFuns ActFunc[]);
-		//void StartTrainingCNN(double*** Grid, int SizeGridX, int SizeGridY, int SetPadding[], int SetMaxPooling[], double SpeedTeach, int PacketSet, DataNeuron& Data, ErrFuns FunErr, int epoch, OptimizaterGradient Optimizator, Regulizators regulizator);
-		//void StartTrainingCNN(double*** Grid, int SizeGridX, int SizeGridY, int SetPadding[], int SetMaxPooling[], double SpeedTeach, int PacketSet, DataNeuron& Data, ErrFuns FunErr, int epoch, OptimizaterGradient Optimizator, Regulizators regulizator, bool StochasticSpeed);
+		
 
 	};
 	class RegressionModel {

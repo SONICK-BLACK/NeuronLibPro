@@ -376,12 +376,12 @@ for (int i = 1; i < 11; i++) {
 //0-cat. 1-Parrot
 
 string path;
-DataCNN data(60, 2, channal);
+DataCNN data(120, 2, channal);
 
 int Cat = 1;
 int Parrot = 1;
 int k = 0;
-for (int i = 0; i < 60; i++) {
+for (int i = 0; i < 120; i++) {
     for (int y = 0; y < channal; y++) {
         data.Grid[i][y](30, 30, 0, 0);
     }
@@ -395,7 +395,7 @@ for (int i = 0; i < 20; i++) {
     }
 }
 
-for (int i = 0; i < 60; i++) {
+for (int i = 0; i < 120; i++) {
     
     
         if (!(i%2)) {
@@ -451,21 +451,21 @@ for (int i = 0; i < 60; i++) {
     }
 const ActFuns Funns[] = { ReLU,Softmax };
 int ArrSize[] = {0,220,2 };
-int ValCore[] = {1};
-int** SizeCore= new int*[1];
+int ValCore[] = {1,2};
+int** SizeCore= new int*[2];
 SizeCore[0] = new int[2];
-//SizeCore[1] = new int[2];
+SizeCore[1] = new int[2];
 SizeCore[0][0] =3;
 SizeCore[0][1] = 3;
-//SizeCore[1][0] = 3;
-//SizeCore[1][1] = 3;
+SizeCore[1][0] = 3;
+SizeCore[1][1] = 3;
 
-CNN cnn(channal, ValCore, 1, SizeCore, 1);
-cnn.PollingVal = new int[1];
+CNN cnn(channal, ValCore, 2, SizeCore, 2);
+cnn.PollingVal = new int[2];
 cnn.PollingVal[0] = 2;
-//cnn.PollingVal[1] = 2;
+cnn.PollingVal[1] = 2;
 
-cnn.StartTrainingCNN(data, 3, ArrSize, Funns, 0.1, 1, MSR,47);
+cnn.StartTrainingCNN(data, 3, ArrSize, Funns, 0.001, 1, MSR,180,Adam, NullR,false);
 
 
 

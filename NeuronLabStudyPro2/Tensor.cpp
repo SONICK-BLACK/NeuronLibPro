@@ -72,7 +72,24 @@ void Tensor::StartTrainingSetCNN(double* VectorRight, ErrFuns erF, double* ErrVe
 	}
 
 }
+void Tensor::StartTrainingSetCNN(double* VectorRight, ErrFuns erF, double* ErrVector, OptimizaterGradient Optimizator)
+{
+	for (int i = 0; i < SizeValSloy; i++) {
+		MatrixNeuron[i].NeuronErrSetNull();
+	}
+	TasksNetwork::EvalutionError(VectorRight, MatrixNeuron[SizeValSloy - 1], erF);
+	for (int i = SizeValSloy - 1; i > 1; i--) {
+		TasksNetwork::EvalutionErrorLast(MatrixNeuron[i], MatrixNeuron[i - 1], MatrixWheight[i - 1], act[i - 1]);
+	}
+	for (int i = SizeValSloy - 1; i > 0; i--) {
+		TasksNetwork::ErrorTeachSloySet(MatrixNeuron[i - 1], MatrixNeuron[i], MatrixWheight[i - 1], MatrixBios[i - 1], act[i - 1], Optimizator);
+	}
+	TasksNetwork::EvalutionErrorLast(MatrixNeuron[1], MatrixNeuron[0], MatrixWheight[0], act[0]);
 
+	for (int i = 0; i < MatrixNeuron[0].sizeMatrix; i++) {
+		ErrVector[i] = MatrixNeuron[0].NeuronErr[i];
+	}
+}
 void Tensor::InitClassesErr() {//Ðåàëèçàöèÿ ôóíêöèè â äðóãèõ StartTrainingov ñäåëàòü
 	for (int i = 0; i < SizeValSloy; i++) {
 		MatrixNeuron[i].InitNeuronClassErr();
@@ -215,7 +232,72 @@ bool Tensor::StartTeachSessionÑNN(double SpeedTeach, int PacketSet, DataNeuron& 
 	return F;
 
 }
+bool Tensor::StartTeachSessionÑNN(double SpeedTeach, int PacketSet, DataNeuron& Data, ErrFuns FunErr, int epoch, OptimizaterGradient Optimizator, Regulizators regulizator, double* VectorErr, int t,int SizeData) {
+	bool F = true;
 
+
+	for (int h = 0; h < epoch; h++) {
+		for (int j = 0; j < Data.SizeData; j++) {
+
+			LoadData(Data.SetData[j]);
+			StartDirect();
+
+			if (MatrixNeuron[SizeValSloy - 1].sizeMatrix == 1) {
+
+				if (Optimizator != NullO) {
+					StartTrainingSetCNN(Data.CorrectVal[j], FunErr, VectorErr, Optimizator);
+					
+				}
+				else {
+					StartTrainingSetCNN(Data.CorrectVal[j], FunErr, VectorErr);
+				}
+
+				StartTrainingSetCNN(Data.CorrectVal[j], FunErr, VectorErr);
+			}
+
+			else if (!SetCorrectVal(Data.CorrectVal[j])) {
+
+
+				if (Optimizator != NullO) {
+					StartTrainingSetCNN(Data.CorrectVal[j], FunErr, VectorErr, Optimizator);
+
+				}
+				else {
+					StartTrainingSetCNN(Data.CorrectVal[j], FunErr, VectorErr);
+				}
+
+			}
+			else {
+				F = false;
+			}
+
+
+
+			if (t == PacketSet) {
+
+				if (regulizator != NullR) {
+					StartGradient(PacketSet, SpeedTeach, regulizator, SizeData);
+				}
+				else {
+					StartGradient(PacketSet, SpeedTeach);
+				}
+				
+
+
+
+
+			}
+			for (int i = 0; i < SizeValSloy; i++) {
+				MatrixNeuron[i].NeuronSetNull();
+			}
+
+		}
+
+
+
+	}
+	return F;
+}
 //
 void Tensor::StartTeachSession(double SpeedTeach, int PacketSet, DataNeuron& Data, ErrFuns FunErr, int epoch, OptimizaterGradient Optimizator, Regulizators regulizator) {
 	for (int i = 0; i < SizeValSloy; i++) {
@@ -1097,6 +1179,411 @@ VectorOut = new double[SizeVectOut];
 	delete[] VectorErr;
 	delete[] VectorOut;
 }
+void CNN::StartTrainingCNN(DataCNN& GridData, int VallSloy, int ArrSizeSloy[], const ActFuns ActFunc[], double SpeedTeach, int PacketSet, ErrFuns FunErr, int epoch, OptimizaterGradient Optimizator, Regulizators regulizator) {
+	SizeOutNeurons = ArrSizeSloy[VallSloy - 1];
+	SetInit = false;
+	//The error vector from peptsetron
+	double* VectorErr;
+	//Output vector
+	double* VectorOut;
+
+	int t = 0; //For packages
+	// Batch initialization, if the return of 1 is successful //Let's make the same scale for everyone in X and Y
+
+	if (!InitBatches(GridData.Grid[0][0].sizeX, GridData.Grid[0][0].sizeY)) {
+		return;
+	}
+	else {
+
+		ArrSizeSloy[0] = ValBat * batñhMax[sloys - 1][0].sizeY * batñhMax[sloys - 1][0].sizeX;
+		localPepzetron = new Tensor(VallSloy, ArrSizeSloy, ActFunc);
+		localPepzetron->InitClassesErr();
+	}
+	int SizeVectOut = ValBat * batñhMax[sloys - 1][0].sizeY * batñhMax[sloys - 1][0].sizeX;
+	VectorErr = new double[SizeVectOut];
+	VectorOut = new double[SizeVectOut];
+
+	DataNeuron data(1, SizeVectOut, GridData.OutSize);
+
+	for (int i = 0; i < epoch; i++) {
+
+		for (int j = 0; j < GridData.SizeData; j++) {
+			///Batch Scan
+			SweepBatches(GridData.Grid[j], GridData.Grid[j][0].sizeX, GridData.Grid[j][0].sizeY);
+
+			//Scan to vector
+			VectorSweep(batñhMax[sloys - 1], valCore[sloys - 1], VectorOut);
+
+
+
+
+
+
+
+			for (int o = 0; o < GridData.OutSize; o++) {
+				data.CorrectVal[0][o] = GridData.CorrectVal[j][o];
+			}
+			for (int h = 0; h < SizeVectOut; h++) {
+				data.SetData[0][h] = VectorOut[h];
+			}
+
+
+
+
+			//Starting the propagation of the error in the pepcetron and getting the input layer error, if correction is not required, we switch to another epoch
+			if (!localPepzetron->StartTeachSessionÑNN(SpeedTeach, PacketSet, data, FunErr, 1, Optimizator, regulizator, VectorErr, t + 1, GridData.SizeData)) {
+
+
+
+				t += 1;
+				if (t == PacketSet) {
+					if (regulizator != NullR) {
+						StrartGradientCore(PacketSet, SpeedTeach, regulizator, GridData.SizeData);
+					}
+					else {
+						StrartGradientCore(PacketSet, SpeedTeach);
+					}
+
+					t = 0;
+				}
+				NullBatchSet();
+				continue;
+			}
+
+			//Translation of the error vector into the batch error matrix
+			VectorErrToMatrix(VectorErr, batñhMax[sloys - 1], valCore[sloys - 1]);
+			//Distribution of batch errors
+
+
+			for (int d = 0; d < valCore[sloys - 1]; d++) {
+				TasksNetwork::EvalutionErrMaxToBatch(batñhMax[sloys - 1][d], batñh[sloys - 1][d]);
+			}
+
+
+
+			for (int f = sloys - 1; f > 0; f--) {
+
+
+				for (int l = 0; l < valCore[f - 1]; l++) {
+					for (int h = 0; h < valCore[f]; h++) {
+						TasksNetwork::EvalutionErrBatchToMax(batñh[f][h], batñhMax[f - 1][l], ñores[f][l][h], Step);
+
+					}
+				}
+
+
+
+
+
+
+				for (int d = 0; d < valCore[f - 1]; d++) {
+					TasksNetwork::EvalutionErrMaxToBatch(batñhMax[f - 1][d], batñh[f - 1][d]);
+				}
+
+
+
+
+
+			}
+
+
+			if (Optimizator != NullO) {
+				for (int f = sloys - 1; f >= 0; f--) {
+
+					if (f == 0) {
+
+						for (int l = 0; l < chanels; l++) {
+							for (int h = 0; h < valCore[f]; h++) {
+								TasksNetwork::ErrorTeachCores(batñh[f][h], GridData.Grid[j][l], ñores[f][l][h], bios[f][h], Step, Optimizator);
+
+							}
+						}
+
+
+					}
+					else {
+
+						for (int l = 0; l < valCore[f - 1]; l++) {
+							for (int h = 0; h < valCore[f]; h++) {
+								TasksNetwork::ErrorTeachCores(batñh[f][h], batñhMax[f - 1][l], ñores[f][l][h], bios[f][h], Step, Optimizator);
+
+							}
+						}
+
+
+					}
+
+
+
+				}
+			}
+			else {
+
+				for (int f = sloys - 1; f >= 0; f--) {
+
+					if (f == 0) {
+
+						for (int l = 0; l < chanels; l++) {
+							for (int h = 0; h < valCore[f]; h++) {
+								TasksNetwork::ErrorTeachCores(batñh[f][h], GridData.Grid[j][l], ñores[f][l][h], bios[f][h], Step);
+
+							}
+						}
+
+
+					}
+					else {
+
+						for (int l = 0; l < valCore[f - 1]; l++) {
+							for (int h = 0; h < valCore[f]; h++) {
+								TasksNetwork::ErrorTeachCores(batñh[f][h], batñhMax[f - 1][l], ñores[f][l][h], bios[f][h], Step);
+
+							}
+						}
+
+
+					}
+
+
+
+				}
+			}
+
+		
+
+
+
+
+
+			t += 1;
+			if (t == PacketSet) {
+				if (regulizator != NullR) {
+					StrartGradientCore(PacketSet, SpeedTeach, regulizator, GridData.SizeData);
+				}
+				else {
+					StrartGradientCore(PacketSet, SpeedTeach);
+				}
+
+				t = 0;
+			}
+			NullBatchSet();
+
+		}
+
+
+
+
+
+		cout << "epoch [" << i + 1 << "]: ";
+		DirectCnnBase(GridData);
+	}
+	delete[] VectorErr;
+	delete[] VectorOut;
+}
+void CNN::StartTrainingCNN(DataCNN& GridData, int VallSloy, int ArrSizeSloy[], const ActFuns ActFunc[], double SpeedTeach, int PacketSet, ErrFuns FunErr, int epoch, OptimizaterGradient Optimizator, Regulizators regulizator, bool StochasticSpeed) {
+	SizeOutNeurons = ArrSizeSloy[VallSloy - 1];
+	SetInit = false;
+	//The error vector from peptsetron
+	double* VectorErr;
+	//Output vector
+	double* VectorOut;
+
+	int t = 0; //For packages
+	// Batch initialization, if the return of 1 is successful //Let's make the same scale for everyone in X and Y
+
+	if (!InitBatches(GridData.Grid[0][0].sizeX, GridData.Grid[0][0].sizeY)) {
+		return;
+	}
+	else {
+
+		ArrSizeSloy[0] = ValBat * batñhMax[sloys - 1][0].sizeY * batñhMax[sloys - 1][0].sizeX;
+		localPepzetron = new Tensor(VallSloy, ArrSizeSloy, ActFunc);
+		localPepzetron->InitClassesErr();
+	}
+	int SizeVectOut = ValBat * batñhMax[sloys - 1][0].sizeY * batñhMax[sloys - 1][0].sizeX;
+	VectorErr = new double[SizeVectOut];
+	VectorOut = new double[SizeVectOut];
+
+	DataNeuron data(1, SizeVectOut, GridData.OutSize);
+
+	for (int i = 0; i < epoch; i++) {
+		if (StochasticSpeed) {
+			SpeedTeach = SpeedTeach * exp(-i / 20.0);
+		}
+		for (int j = 0; j < GridData.SizeData; j++) {
+			///Batch Scan
+			SweepBatches(GridData.Grid[j], GridData.Grid[j][0].sizeX, GridData.Grid[j][0].sizeY);
+
+			//Scan to vector
+			VectorSweep(batñhMax[sloys - 1], valCore[sloys - 1], VectorOut);
+
+
+
+
+
+
+
+			for (int o = 0; o < GridData.OutSize; o++) {
+				data.CorrectVal[0][o] = GridData.CorrectVal[j][o];
+			}
+			for (int h = 0; h < SizeVectOut; h++) {
+				data.SetData[0][h] = VectorOut[h];
+			}
+
+
+
+
+			//Starting the propagation of the error in the pepcetron and getting the input layer error, if correction is not required, we switch to another epoch
+			if (!localPepzetron->StartTeachSessionÑNN(SpeedTeach, PacketSet, data, FunErr, 1, Optimizator, regulizator, VectorErr, t + 1, GridData.SizeData)) {
+
+
+
+				t += 1;
+				if (t == PacketSet) {
+					if (regulizator != NullR) {
+						StrartGradientCore(PacketSet, SpeedTeach, regulizator, GridData.SizeData);
+					}
+					else {
+						StrartGradientCore(PacketSet, SpeedTeach);
+					}
+
+					t = 0;
+				}
+				NullBatchSet();
+				continue;
+			}
+
+			//Translation of the error vector into the batch error matrix
+			VectorErrToMatrix(VectorErr, batñhMax[sloys - 1], valCore[sloys - 1]);
+			//Distribution of batch errors
+
+
+			for (int d = 0; d < valCore[sloys - 1]; d++) {
+				TasksNetwork::EvalutionErrMaxToBatch(batñhMax[sloys - 1][d], batñh[sloys - 1][d]);
+			}
+
+
+
+			for (int f = sloys - 1; f > 0; f--) {
+
+
+				for (int l = 0; l < valCore[f - 1]; l++) {
+					for (int h = 0; h < valCore[f]; h++) {
+						TasksNetwork::EvalutionErrBatchToMax(batñh[f][h], batñhMax[f - 1][l], ñores[f][l][h], Step);
+
+					}
+				}
+
+
+
+
+
+
+				for (int d = 0; d < valCore[f - 1]; d++) {
+					TasksNetwork::EvalutionErrMaxToBatch(batñhMax[f - 1][d], batñh[f - 1][d]);
+				}
+
+
+
+
+
+			}
+
+
+
+
+			if (Optimizator != NullO) {
+				for (int f = sloys - 1; f >= 0; f--) {
+
+					if (f == 0) {
+
+						for (int l = 0; l < chanels; l++) {
+							for (int h = 0; h < valCore[f]; h++) {
+								TasksNetwork::ErrorTeachCores(batñh[f][h], GridData.Grid[j][l], ñores[f][l][h], bios[f][h], Step, Optimizator);
+
+							}
+						}
+
+
+					}
+					else {
+
+						for (int l = 0; l < valCore[f - 1]; l++) {
+							for (int h = 0; h < valCore[f]; h++) {
+								TasksNetwork::ErrorTeachCores(batñh[f][h], batñhMax[f - 1][l], ñores[f][l][h], bios[f][h], Step, Optimizator);
+
+							}
+						}
+
+
+					}
+
+
+
+				}
+			}
+			else {
+
+				for (int f = sloys - 1; f >= 0; f--) {
+
+					if (f == 0) {
+
+						for (int l = 0; l < chanels; l++) {
+							for (int h = 0; h < valCore[f]; h++) {
+								TasksNetwork::ErrorTeachCores(batñh[f][h], GridData.Grid[j][l], ñores[f][l][h], bios[f][h], Step);
+
+							}
+						}
+
+
+					}
+					else {
+
+						for (int l = 0; l < valCore[f - 1]; l++) {
+							for (int h = 0; h < valCore[f]; h++) {
+								TasksNetwork::ErrorTeachCores(batñh[f][h], batñhMax[f - 1][l], ñores[f][l][h], bios[f][h], Step);
+
+							}
+						}
+
+
+					}
+
+
+
+				}
+			}
+
+
+
+
+
+			t += 1;
+			if (t == PacketSet) {
+				if (regulizator != NullR) {
+					StrartGradientCore(PacketSet, SpeedTeach, regulizator, GridData.SizeData);
+				}
+				else {
+					StrartGradientCore(PacketSet, SpeedTeach);
+				}
+
+				t = 0;
+			}
+			NullBatchSet();
+
+		}
+
+
+
+
+
+		cout << "epoch [" << i + 1 << "]: ";
+		DirectCnnBase(GridData);
+	}
+	delete[] VectorErr;
+	delete[] VectorOut;
+}
+
 
 void CNN::SweepBatches(Batch* Grid, int SizeGridX, int SizeGridY) {
 	
@@ -1307,7 +1794,293 @@ void CNN::StrartGradientCore(int PacketVal, double SpeedTeach) {
 
 	
 }
+void CNN::StrartGradientCore(int PacketVal, double SpeedTeach, Regulizators regulizator, int SizeObservations) {
+	HypPar::DataHyperParametr HYpPar;
+	if (regulizator == L1) {
 
+		for (int i = 0; i < sloys; i++) {
+			if (i == 0) {
+				for (int g = 0; g < chanels; g++) {
+					for (int j = 0; j < valCore[0]; j++) {
+						for (int y = 0; y < ñores[0][g][j].sizeY; y++) {
+							for (int x = 0; x < ñores[0][g][j].sizeX; x++) {
+								ñores[i][g][j].Core[y][x] = ñores[i][g][j].Core[y][x] - ñores[i][g][j].CoreErr[y][x] / (double)PacketVal * SpeedTeach-SpeedTeach*(HYpPar.hOptim1/ ((double)PacketVal* (double)SizeObservations));
+
+
+							}
+						}
+
+					}
+				}
+
+			}
+			else {
+				for (int l = 0; l < valCore[i - 1]; l++) {
+
+					for (int j = 0; j < valCore[i]; j++) {
+						for (int y = 0; y < ñores[i][l][j].sizeY; y++) {
+							for (int x = 0; x < ñores[i][l][j].sizeX; x++) {
+								ñores[i][l][j].Core[y][x] = ñores[i][l][j].Core[y][x] - ñores[i][l][j].CoreErr[y][x] / (double)PacketVal * SpeedTeach - SpeedTeach * (HYpPar.hOptim1 / ((double)PacketVal * (double)SizeObservations));
+
+							}
+						}
+
+					}
+				}
+
+			}
+
+		}
+
+		for (int j = 0; j < valCore[0]; j++) {
+			for (int y = 0; y < bios[0][j].sizeY; y++) {
+				for (int x = 0; x < bios[0][j].sizeX; x++) {
+					bios[0][j].bios[y][x] -= bios[0][j].biosErrPacket[y][x] * SpeedTeach / (double)PacketVal - SpeedTeach * (HYpPar.hOptim1 / ((double)PacketVal * (double)SizeObservations));
+
+				}
+			}
+		}
+
+		for (int i = 1; i < sloys; i++) {
+
+
+			for (int l = 0; l < valCore[i]; l++) {
+
+
+
+				for (int y = 0; y < bios[i][l].sizeY; y++) {
+					for (int x = 0; x < bios[i][l].sizeX; x++) {
+						bios[i][l].bios[y][x] -= bios[i][l].biosErrPacket[y][x] * SpeedTeach / (double)PacketVal - SpeedTeach * (HYpPar.hOptim1 / ((double)PacketVal * (double)SizeObservations));
+					}
+				}
+
+
+
+
+			}
+
+
+
+
+
+
+
+
+		}
+
+	}
+
+	if (regulizator == L2) {
+
+		for (int i = 0; i < sloys; i++) {
+			if (i == 0) {
+				for (int g = 0; g < chanels; g++) {
+					for (int j = 0; j < valCore[0]; j++) {
+						for (int y = 0; y < ñores[0][g][j].sizeY; y++) {
+							for (int x = 0; x < ñores[0][g][j].sizeX; x++) {
+								ñores[i][g][j].Core[y][x] = ñores[i][g][j].Core[y][x] - ñores[i][g][j].CoreErr[y][x] / (double)PacketVal * SpeedTeach - ñores[i][g][j].Core[y][x]*SpeedTeach * (HYpPar.hOptim2 / ((double)PacketVal * (double)SizeObservations));
+
+
+							}
+						}
+
+					}
+				}
+
+			}
+			else {
+				for (int l = 0; l < valCore[i - 1]; l++) {
+
+					for (int j = 0; j < valCore[i]; j++) {
+						for (int y = 0; y < ñores[i][l][j].sizeY; y++) {
+							for (int x = 0; x < ñores[i][l][j].sizeX; x++) {
+								ñores[i][l][j].Core[y][x] = ñores[i][l][j].Core[y][x] - ñores[i][l][j].CoreErr[y][x] / (double)PacketVal * SpeedTeach -  ñores[i][l][j].Core[y][x]*SpeedTeach * (HYpPar.hOptim2 / ((double)PacketVal * (double)SizeObservations));
+
+							}
+						}
+
+					}
+				}
+
+			}
+
+		}
+
+		for (int j = 0; j < valCore[0]; j++) {
+			for (int y = 0; y < bios[0][j].sizeY; y++) {
+				for (int x = 0; x < bios[0][j].sizeX; x++) {
+					bios[0][j].bios[y][x] -= bios[0][j].biosErrPacket[y][x] * SpeedTeach / (double)PacketVal - bios[0][j].biosErrPacket[y][x]*SpeedTeach * (HYpPar.hOptim2 / ((double)PacketVal * (double)SizeObservations));
+
+				}
+			}
+		}
+
+		for (int i = 1; i < sloys; i++) {
+
+
+			for (int l = 0; l < valCore[i]; l++) {
+
+
+
+				for (int y = 0; y < bios[i][l].sizeY; y++) {
+					for (int x = 0; x < bios[i][l].sizeX; x++) {
+						bios[i][l].bios[y][x] -= bios[i][l].biosErrPacket[y][x] * SpeedTeach / (double)PacketVal - bios[i][l].biosErrPacket[y][x]*SpeedTeach * (HYpPar.hOptim2 / ((double)PacketVal * (double)SizeObservations));
+					}
+				}
+
+
+
+
+			}
+
+
+
+
+
+
+
+
+		}
+
+	}
+	if (regulizator == ElasticNet) {
+
+		for (int i = 0; i < sloys; i++) {
+			if (i == 0) {
+				for (int g = 0; g < chanels; g++) {
+					for (int j = 0; j < valCore[0]; j++) {
+						for (int y = 0; y < ñores[0][g][j].sizeY; y++) {
+							for (int x = 0; x < ñores[0][g][j].sizeX; x++) {
+								ñores[i][g][j].Core[y][x] = ñores[i][g][j].Core[y][x] - ñores[i][g][j].CoreErr[y][x] / (double)PacketVal * SpeedTeach - ñores[i][g][j].Core[y][x] * SpeedTeach * (HYpPar.hOptim2 / ((double)PacketVal * (double)SizeObservations))- (SpeedTeach * HYpPar.hOptim1) / ((double)PacketVal * (double)SizeObservations);
+
+
+							}
+						}
+
+					}
+				}
+
+			}
+			else {
+				for (int l = 0; l < valCore[i - 1]; l++) {
+
+					for (int j = 0; j < valCore[i]; j++) {
+						for (int y = 0; y < ñores[i][l][j].sizeY; y++) {
+							for (int x = 0; x < ñores[i][l][j].sizeX; x++) {
+								ñores[i][l][j].Core[y][x] = ñores[i][l][j].Core[y][x] - ñores[i][l][j].CoreErr[y][x] / (double)PacketVal * SpeedTeach - ñores[i][l][j].Core[y][x] * SpeedTeach * (HYpPar.hOptim2 / ((double)PacketVal * (double)SizeObservations)) - (SpeedTeach * HYpPar.hOptim1) / ((double)PacketVal * (double)SizeObservations);
+
+							}
+						}
+
+					}
+				}
+
+			}
+
+		}
+
+		for (int j = 0; j < valCore[0]; j++) {
+			for (int y = 0; y < bios[0][j].sizeY; y++) {
+				for (int x = 0; x < bios[0][j].sizeX; x++) {
+					bios[0][j].bios[y][x] -= bios[0][j].biosErrPacket[y][x] * SpeedTeach / (double)PacketVal - bios[0][j].biosErrPacket[y][x] * SpeedTeach * (HYpPar.hOptim2 / ((double)PacketVal * (double)SizeObservations)) - (SpeedTeach * HYpPar.hOptim1) / ((double)PacketVal * (double)SizeObservations);
+
+				}
+			}
+		}
+
+		for (int i = 1; i < sloys; i++) {
+
+
+			for (int l = 0; l < valCore[i]; l++) {
+
+
+
+				for (int y = 0; y < bios[i][l].sizeY; y++) {
+					for (int x = 0; x < bios[i][l].sizeX; x++) {
+						bios[i][l].bios[y][x] -= bios[i][l].biosErrPacket[y][x] * SpeedTeach / (double)PacketVal - bios[i][l].biosErrPacket[y][x] * SpeedTeach * (HYpPar.hOptim2 / ((double)PacketVal * (double)SizeObservations)) - (SpeedTeach * HYpPar.hOptim1) / ((double)PacketVal * (double)SizeObservations);
+					}
+				}
+
+
+
+
+			}
+
+
+
+
+
+
+
+
+		}
+
+	}
+
+	////NuLL:
+
+	for (int i = 0; i < sloys; i++) {
+		if (i == 0) {
+			for (int g = 0; g < chanels; g++) {
+				for (int j = 0; j < valCore[0]; j++) {
+
+					ñores[i][g][j].NullErrCore();
+
+
+				}
+			}
+
+		}
+		else {
+			for (int l = 0; l < valCore[i - 1]; l++) {
+
+				for (int j = 0; j < valCore[i]; j++) {
+
+
+					ñores[i][l][j].NullErrCore();
+
+
+				}
+			}
+
+		}
+
+	}
+	for (int j = 0; j < valCore[0]; j++) {
+
+		bios[0][j].SetNullErr();
+
+
+	}
+
+
+
+	for (int i = 1; i < sloys; i++) {
+
+
+		for (int l = 0; l < valCore[i]; l++) {
+
+
+
+
+			bios[i][l].SetNullErr();
+
+
+
+
+
+
+		}
+
+
+
+
+
+
+
+	}
+
+}
 
 void CNN::StartDirectCNN(Batch* Grid, void (*set_function)(double* SetOutput), int VallSloy, const int ArrSizeSloy[], const ActFuns ActFunc[]) {
 	if (SetInit) {
@@ -1551,6 +2324,8 @@ void CNN::NullBatchSet() {
 }
 
 }
+
+
 
 void Tsr::TestCNNModel(int chanels, int  valCore[], int sloys, int*** SizeCore, int Step, int SizeGridX, int SizeGridY) {
 	

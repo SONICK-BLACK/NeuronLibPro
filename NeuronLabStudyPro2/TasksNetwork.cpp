@@ -678,6 +678,126 @@ void TasksNetwork::ErrorTeachCores(Batch& batch, Batch& batchMax, Cores& core, B
 	
 }
 
+ void TasksNetwork::ErrorTeachCores(Batch& batch, Batch& batchMax, Cores& core, BiosCNN& bios, int step, OptimizaterGradient Optimizator) {
+	
+	HypPar::DataHyperParametr HYpPar;
+	double VCore = 0;
+	double VBios= 0;
+	if (Optimizator == Momentum) {
+		for (int i = 0; i < (((batchMax.sizeY - (core.sizeY - 1)) - 1) / step + 1); i++) {
+			for (int j = 0; j < (((batchMax.sizeX - (core.sizeX - 1)) - 1) / step + 1); j++) {
+				for (int l = 0; l < core.sizeY; l++) {
+					for (int h = 0; h < core.sizeX; h++) {
+
+						VCore = VCore * HYpPar.SetM + batchMax.batch[(i * step) + l][(j * step) + h] * batch.batchErr[i][j] * Function::FunctionUseDer(ReLU, batch.batchNoAct[i][j], 0) * (1 - HYpPar.SetM);
+
+						core.CoreErr[l][h] += VCore;
+
+
+						
+
+
+
+
+
+					}
+				}
+				
+				VBios = VBios * HYpPar.SetM + (1 - HYpPar.SetM) * batch.batchErr[i][j] * Function::FunctionUseDer(ReLU, batch.batchNoAct[i][j], 0);
+				bios.biosErrPacket[i][j] += VBios;
+
+
+				
+
+
+			}
+		}
+
+		
+	}
+	if (Optimizator == rmsprop) {
+		for (int i = 0; i < (((batchMax.sizeY - (core.sizeY - 1)) - 1) / step + 1); i++) {
+			for (int j = 0; j < (((batchMax.sizeX - (core.sizeX - 1)) - 1) / step + 1); j++) {
+				for (int l = 0; l < core.sizeY; l++) {
+					for (int h = 0; h < core.sizeX; h++) {
+
+						VCore = VCore * HYpPar.SetMR + pow(batchMax.batch[(i * step) + l][(j * step) + h] * batch.batchErr[i][j] * Function::FunctionUseDer(ReLU, batch.batchNoAct[i][j], 0),2) * (1 - HYpPar.SetMR);
+
+						core.CoreErr[l][h] += batchMax.batch[(i * step) + l][(j * step) + h] * batch.batchErr[i][j] * Function::FunctionUseDer(ReLU, batch.batchNoAct[i][j])/(sqrt(VCore)+HYpPar.dEconst);///?
+
+
+
+
+
+
+
+
+					}
+				}
+
+				VBios = VBios * HYpPar.SetMR + (1 - HYpPar.SetMR) * pow(batch.batchErr[i][j] * Function::FunctionUseDer(ReLU, batch.batchNoAct[i][j], 0),2);
+				bios.biosErrPacket[i][j] += batch.batchErr[i][j] * Function::FunctionUseDer(ReLU, batch.batchNoAct[i][j], 0)/(VBios+HYpPar.dEconst);
+
+
+
+
+
+			}
+		}
+	}
+	if (Optimizator == Adam) {
+		double VCoreR = 0;
+		int kC = 0;
+		int kB = 0;
+		double VCoreRN = 0;
+		double VCoreM = 0;
+		double VCoreMN = 0;
+		double VBiosR = 0;
+		double VBiosM = 0;
+		double VBiosRN = 0;
+		double VBiosMN = 0;
+		for (int i = 0; i < (((batchMax.sizeY - (core.sizeY - 1)) - 1) / step + 1); i++) {
+			for (int j = 0; j < (((batchMax.sizeX - (core.sizeX - 1)) - 1) / step + 1); j++) {
+				for (int l = 0; l < core.sizeY; l++) {
+					for (int h = 0; h < core.sizeX; h++) {
+
+						VCoreR = VCoreR * HYpPar.SetMR + pow(batchMax.batch[(i * step) + l][(j * step) + h] * batch.batchErr[i][j] * Function::FunctionUseDer(ReLU, batch.batchNoAct[i][j], 0), 2) * (1 - HYpPar.SetMR);
+						VCoreRN = VCoreR / (1-pow(HYpPar.SetMR, kC+1));
+						VCoreM = VCoreM * HYpPar.SetM + batchMax.batch[(i * step) + l][(j * step) + h] * batch.batchErr[i][j] * Function::FunctionUseDer(ReLU, batch.batchNoAct[i][j], 0) * (1 - HYpPar.SetM);
+						VCoreMN = VCoreM / (1 - pow(HYpPar.SetM, kC+1));
+						core.CoreErr[l][h] += VCoreMN/(sqrt(VCoreRN)+HYpPar.dEconst);
+
+
+
+						kC += 1;
+
+
+
+
+					}
+				}
+
+
+
+				VBiosR = VBiosR * HYpPar.SetMR + pow(batch.batchErr[i][j] * Function::FunctionUseDer(ReLU, batch.batchNoAct[i][j],0), 2) * (1 - HYpPar.SetMR);
+				VBiosRN = VBiosR / (1 - pow(HYpPar.SetMR, kB + 1));
+				VBiosM = VBiosM * HYpPar.SetM + batch.batchErr[i][j] * Function::FunctionUseDer(ReLU, batch.batchNoAct[i][j], 0) * (1 - HYpPar.SetM);
+				VBiosMN = VBiosM / (1 - pow(HYpPar.SetM, kB + 1));
+				bios.biosErrPacket[i][j] += VBiosMN / (sqrt(VBiosRN) + HYpPar.dEconst);
+				kB += 1;
+				
+
+
+
+
+
+			}
+		}
+
+
+	}
+}
+
 void TasksNetwork::actChann(Batch* batchChan, BiosCNN* bios, int valChan) {
 	
 	for (int i = 0; i < valChan; i++) {
