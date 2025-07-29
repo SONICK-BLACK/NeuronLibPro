@@ -50,8 +50,8 @@ namespace Tsr {
 
 
 		Tensor(int VallSloy, const int ArrSizeSloy[], const ActFuns ActFunc[]); //Standart Pepzetron;
-		void SaveParametsNeurons(string pathW = "wheight.txt", string pathB = "bios.txt");
-		void LoadParametsNeurons(string pathW = "wheight.txt", string pathB = "bios.txt");
+		void SaveParametsNeurons(string pathW = "wheight.txt", string pathB = "ofset.txt");
+		void LoadParametsNeurons(string pathW = "wheight.txt", string pathB = "ofset.txt");
 
 		void StartTeachSession(double SpeedTeach, int PacketSet, DataNeuron& Data, ErrFuns FunErr, int epoch);
 		void StartTeachSession(double SpeedTeach, int PacketSet, DataNeuron& Data, ErrFuns FunErr, int epoch, OptimizaterGradient Optimizator, Regulizators regulizator);
@@ -70,7 +70,8 @@ namespace Tsr {
 		Tensor* localPepzetron;
 		BiosCNN** bios;
 		Cores*** ñores;//Cores in layers
-		bool SetInit = false;
+		bool SetInitDirect = false;
+		bool SetInitTeach = false;
 		int ValBat; //number of batches in the output convolutional layer
 		Batch** batñh;//Many Batches are there in total
 		Batch** batñhMax;// Many Batches are there in total
@@ -92,12 +93,14 @@ namespace Tsr {
 
 		int* PollingVal;
 		CNN(int chanels, int  valCore[], int sloys, int** SizeCore, int Step);
-		void StartTrainingCNN(DataCNN& GridData, int VallSloy, int ArrSizeSloy[], const ActFuns ActFunc[], double SpeedTeach, int PacketSet, ErrFuns FunErr, int epoch);
-		void StartTrainingCNN(DataCNN& GridData, int VallSloy, int ArrSizeSloy[], const ActFuns ActFunc[], double SpeedTeach, int PacketSet, ErrFuns FunErr, int epoch, OptimizaterGradient Optimizator, Regulizators regulizator);
-		void StartTrainingCNN(DataCNN& GridData, int VallSloy, int ArrSizeSloy[], const ActFuns ActFunc[], double SpeedTeach, int PacketSet, ErrFuns FunErr, int epoch, OptimizaterGradient Optimizator, Regulizators regulizator, bool StochasticSpeed);
+		void StartTrainingCNN(DataCNN& GridData, double SpeedTeach, int PacketSet, ErrFuns FunErr, int epoch);
+		void StartTrainingCNN(DataCNN& GridData, double SpeedTeach, int PacketSet, ErrFuns FunErr, int epoch, OptimizaterGradient Optimizator, Regulizators regulizator);
+		void StartTrainingCNN(DataCNN& GridData,  double SpeedTeach, int PacketSet, ErrFuns FunErr, int epoch, OptimizaterGradient Optimizator, Regulizators regulizator, bool StochasticSpeed);
 		void StartDirectCNN(Batch* Grid, void (*set_function)(double* SetOutput), int VallSloy, const int ArrSizeSloy[], const ActFuns ActFunc[]);
-		
-
+		void SaveParamentsCNN(string pathCore = "Cores.txt", string pathBios = "Bios.txt");
+		void LoadParamentsCNN(string pathCore = "Cores.txt", string pathBios = "Bios.txt");
+		void InitPepzetronCNNForTeach(int VallSloy, int ArrSizeSloy[], const ActFuns ActFunc[], int InputSizeGridX, int InputSizeGridY);
+		void InitPepzetronCNNForDirect(int VallSloy, int ArrSizeSloy[], const ActFuns ActFunc[], int InputSizeGridX, int InputSizeGridY);
 	};
 	class RegressionModel {
 	private:

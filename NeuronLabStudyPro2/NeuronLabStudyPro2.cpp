@@ -375,6 +375,13 @@ for (int i = 1; i < 11; i++) {
 
 //0-cat. 1-Parrot
 
+cout << endl;
+int Set;
+cout << "Teach paraments? (1/0)";
+cin >> Set;
+
+
+
 string path;
 DataCNN data(120, 2, channal);
 
@@ -460,12 +467,89 @@ SizeCore[0][1] = 3;
 SizeCore[1][0] = 3;
 SizeCore[1][1] = 3;
 
+
+if (!Set) {
+    CNN cnn(channal, ValCore, 2, SizeCore, 2);
+    cnn.PollingVal = new int[2];
+    cnn.PollingVal[0] = 2;
+    cnn.PollingVal[1] = 2;
+
+    cnn.InitPepzetronCNNForDirect(3, ArrSize, Funns, data.Grid[0][0].sizeX, data.Grid[0][0].sizeY);
+    cnn.LoadParamentsCNN();
+    Cat = 1;
+    Parrot = 1;
+    k = 0;
+    for (int i = 0; i < 20; i++) {
+
+
+        if (!(i % 2)) {
+            path = "B:/Work/LocalProject/VS/NeuronLabStudyPro2/NeuronLabStudyPro2/DataTest/Cat";
+            path += to_string(Cat);
+            path += ".bmp";
+            img::Image* im = new Image(&path[0]);
+            for (int y = 0; y < channal; y++) {
+                for (int j = 0; j < 30; j++) {
+                    for (int l = 0; l < 30; l++) {
+
+
+                        dataTest.Grid[i][y].batch[j][l] = im->data.rgb[j][l].RGB[y] / 255.0;
+
+
+                        k += 1;
+                    }
+                }
+            }
+            dataTest.CorrectVal[i][0] = 1.0;
+            dataTest.CorrectVal[i][1] = 0.0;
+            delete im;
+            Cat += 1;
+
+        }
+        else {
+
+            path = "B:/Work/LocalProject/VS/NeuronLabStudyPro2/NeuronLabStudyPro2/DataTest/Parrot";
+            path += to_string(Parrot);
+            path += ".bmp";
+            img::Image* im = new Image(&path[0]);
+            for (int y = 0; y < channal; y++) {
+                for (int j = 0; j < 30; j++) {
+                    for (int l = 0; l < 30; l++) {
+
+
+
+                        dataTest.Grid[i][y].batch[j][l] = im->data.rgb[j][l].RGB[y] / 255.0;
+
+                        k += 1;
+                    }
+                }
+            }
+            dataTest.CorrectVal[i][0] = 0.0;
+            dataTest.CorrectVal[i][1] = 1.0;
+            delete im;
+            Parrot += 1;
+        }
+
+
+
+    }
+    for (int i = 0; i < 20; i++) {
+        cnn.StartDirectCNN(dataTest.Grid[i], OutputData3, 2, ArrSize, Funns);
+        pup += 1;
+    }
+
+    cout << endl;
+    cout << (Val1 / 20.0) * 100;
+    return 0;
+    
+}
 CNN cnn(channal, ValCore, 2, SizeCore, 2);
+
 cnn.PollingVal = new int[2];
 cnn.PollingVal[0] = 2;
 cnn.PollingVal[1] = 2;
 
-cnn.StartTrainingCNN(data, 3, ArrSize, Funns, 0.001, 1, MSR,180,Adam, NullR,false);
+cnn.InitPepzetronCNNForTeach(3, ArrSize, Funns, data.Grid[0][0].sizeX, data.Grid[0][0].sizeY);
+cnn.StartTrainingCNN(data, 0.001, 1, MSR,180,Adam, NullR,false);
 
 
 
@@ -533,6 +617,14 @@ for (int i = 0; i < 20; i++) {
 
 cout << endl;
 cout << (Val1 / 20.0) * 100;
+
+cout << endl;
+int set;
+cout << "Save paraments? (1/0)";
+cin >> set;
+if (set) {
+    cnn.SaveParamentsCNN();
+}
 
 
 /*

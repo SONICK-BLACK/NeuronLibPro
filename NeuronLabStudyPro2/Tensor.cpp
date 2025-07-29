@@ -611,7 +611,8 @@ void Tensor::LoadParametsNeurons(string pathW , string pathB) {
 void Tensor::StartDirectSession(DataNeuron& Data, void (*set_function)(double* setNeuron)) {
 	for (int j = 0; j < Data.SizeData; j++) {
 		LoadData(Data.SetData[j]);
-		StartDirect();
+		//StartDirect();
+		StartDirectBase();
 		set_function(MatrixNeuron[SizeValSloy - 1].Neuron);
 		for (int i = 0; i < SizeValSloy; i++) {
 			MatrixNeuron[i].NeuronSetNull();
@@ -622,7 +623,7 @@ void Tensor::StartDirectSession(DataNeuron& Data, void (*set_function)(double* s
 void Tensor::StartDirectSessionCNNBase(double* Data, double& val, double* Correctval) {
 	
 		LoadData(Data);
-		StartDirect();
+		StartDirectBase();
 		
 
 
@@ -1021,9 +1022,9 @@ CNN::CNN(int chanels, int  valCore[], int sloys, int** SizeCore, int Step) {
 
 
 }
-void CNN::StartTrainingCNN(DataCNN& GridData, int VallSloy, int ArrSizeSloy[], const ActFuns ActFunc[], double SpeedTeach, int PacketSet, ErrFuns FunErr, int epoch) {
-	SizeOutNeurons = ArrSizeSloy[VallSloy - 1];
-	SetInit = false;
+void CNN::StartTrainingCNN(DataCNN& GridData, double SpeedTeach, int PacketSet, ErrFuns FunErr, int epoch) {
+	//SizeOutNeurons = ArrSizeSloy[VallSloy - 1];
+	//SetInit = false;
 	//The error vector from peptsetron
 	double* VectorErr;
 	//Output vector
@@ -1032,14 +1033,18 @@ void CNN::StartTrainingCNN(DataCNN& GridData, int VallSloy, int ArrSizeSloy[], c
 	int t = 0; //For packages
 	// Batch initialization, if the return of 1 is successful //Let's make the same scale for everyone in X and Y
 
-	if (!InitBatches( GridData.Grid[0][0].sizeX, GridData.Grid[0][0].sizeY)) {
+	//if (!InitBatches( GridData.Grid[0][0].sizeX, GridData.Grid[0][0].sizeY)) {
+	//	return;
+	//}
+	//else {
+	
+	//ArrSizeSloy[0]= ValBat * batñhMax[sloys - 1][0].sizeY * batñhMax[sloys - 1][0].sizeX;
+	//localPepzetron = new Tensor(VallSloy, ArrSizeSloy, ActFunc);
+	//localPepzetron->InitClassesErr();
+	//}
+	if (!SetInitTeach) {
+		cout << "Don`t init TeachPepzetron...";
 		return;
-	}
-	else {
-		
-	ArrSizeSloy[0]= ValBat * batñhMax[sloys - 1][0].sizeY * batñhMax[sloys - 1][0].sizeX;
-	localPepzetron = new Tensor(VallSloy, ArrSizeSloy, ActFunc);
-	localPepzetron->InitClassesErr();
 	}
 int SizeVectOut = ValBat * batñhMax[sloys - 1][0].sizeY * batñhMax[sloys - 1][0].sizeX;
 VectorErr = new double[SizeVectOut];
@@ -1179,9 +1184,9 @@ VectorOut = new double[SizeVectOut];
 	delete[] VectorErr;
 	delete[] VectorOut;
 }
-void CNN::StartTrainingCNN(DataCNN& GridData, int VallSloy, int ArrSizeSloy[], const ActFuns ActFunc[], double SpeedTeach, int PacketSet, ErrFuns FunErr, int epoch, OptimizaterGradient Optimizator, Regulizators regulizator) {
-	SizeOutNeurons = ArrSizeSloy[VallSloy - 1];
-	SetInit = false;
+void CNN::StartTrainingCNN(DataCNN& GridData, double SpeedTeach, int PacketSet, ErrFuns FunErr, int epoch, OptimizaterGradient Optimizator, Regulizators regulizator) {
+	//SizeOutNeurons = ArrSizeSloy[VallSloy - 1];
+	//SetInit = false;
 	//The error vector from peptsetron
 	double* VectorErr;
 	//Output vector
@@ -1190,14 +1195,18 @@ void CNN::StartTrainingCNN(DataCNN& GridData, int VallSloy, int ArrSizeSloy[], c
 	int t = 0; //For packages
 	// Batch initialization, if the return of 1 is successful //Let's make the same scale for everyone in X and Y
 
-	if (!InitBatches(GridData.Grid[0][0].sizeX, GridData.Grid[0][0].sizeY)) {
-		return;
-	}
-	else {
+//	if (!InitBatches(GridData.Grid[0][0].sizeX, GridData.Grid[0][0].sizeY)) {
+	//	return;
+	//}
+//	else {
 
-		ArrSizeSloy[0] = ValBat * batñhMax[sloys - 1][0].sizeY * batñhMax[sloys - 1][0].sizeX;
-		localPepzetron = new Tensor(VallSloy, ArrSizeSloy, ActFunc);
-		localPepzetron->InitClassesErr();
+	//	ArrSizeSloy[0] = ValBat * batñhMax[sloys - 1][0].sizeY * batñhMax[sloys - 1][0].sizeX;
+		//localPepzetron = new Tensor(VallSloy, ArrSizeSloy, ActFunc);
+		//localPepzetron->InitClassesErr();
+//	}
+	if (!SetInitTeach) {
+		cout << "Don`t init TeachPepzetron...";
+		return;
 	}
 	int SizeVectOut = ValBat * batñhMax[sloys - 1][0].sizeY * batñhMax[sloys - 1][0].sizeX;
 	VectorErr = new double[SizeVectOut];
@@ -1380,9 +1389,9 @@ void CNN::StartTrainingCNN(DataCNN& GridData, int VallSloy, int ArrSizeSloy[], c
 	delete[] VectorErr;
 	delete[] VectorOut;
 }
-void CNN::StartTrainingCNN(DataCNN& GridData, int VallSloy, int ArrSizeSloy[], const ActFuns ActFunc[], double SpeedTeach, int PacketSet, ErrFuns FunErr, int epoch, OptimizaterGradient Optimizator, Regulizators regulizator, bool StochasticSpeed) {
-	SizeOutNeurons = ArrSizeSloy[VallSloy - 1];
-	SetInit = false;
+void CNN::StartTrainingCNN(DataCNN& GridData, double SpeedTeach, int PacketSet, ErrFuns FunErr, int epoch, OptimizaterGradient Optimizator, Regulizators regulizator, bool StochasticSpeed) {
+	//SizeOutNeurons = ArrSizeSloy[VallSloy - 1];
+	//SetInit = false;
 	//The error vector from peptsetron
 	double* VectorErr;
 	//Output vector
@@ -1391,14 +1400,18 @@ void CNN::StartTrainingCNN(DataCNN& GridData, int VallSloy, int ArrSizeSloy[], c
 	int t = 0; //For packages
 	// Batch initialization, if the return of 1 is successful //Let's make the same scale for everyone in X and Y
 
-	if (!InitBatches(GridData.Grid[0][0].sizeX, GridData.Grid[0][0].sizeY)) {
-		return;
-	}
-	else {
+	//if (!InitBatches(GridData.Grid[0][0].sizeX, GridData.Grid[0][0].sizeY)) {
+	//	return;
+	//}
+	//else {
 
-		ArrSizeSloy[0] = ValBat * batñhMax[sloys - 1][0].sizeY * batñhMax[sloys - 1][0].sizeX;
-		localPepzetron = new Tensor(VallSloy, ArrSizeSloy, ActFunc);
-		localPepzetron->InitClassesErr();
+		//ArrSizeSloy[0] = ValBat * batñhMax[sloys - 1][0].sizeY * batñhMax[sloys - 1][0].sizeX;
+		//localPepzetron = new Tensor(VallSloy, ArrSizeSloy, ActFunc);
+		//localPepzetron->InitClassesErr();
+	//}
+	if (!SetInitTeach) {
+		cout << "Don`t init TeachPepzetron...";
+		return;
 	}
 	int SizeVectOut = ValBat * batñhMax[sloys - 1][0].sizeY * batñhMax[sloys - 1][0].sizeX;
 	VectorErr = new double[SizeVectOut];
@@ -1582,6 +1595,39 @@ void CNN::StartTrainingCNN(DataCNN& GridData, int VallSloy, int ArrSizeSloy[], c
 	}
 	delete[] VectorErr;
 	delete[] VectorOut;
+}
+
+void CNN::InitPepzetronCNNForTeach(int VallSloy, int ArrSizeSloy[], const ActFuns ActFunc[], int InputSizeGridX, int InputSizeGridY) {
+	
+
+	if (!InitBatches(InputSizeGridX, InputSizeGridY)) {
+		cout << "Erorr Init Batches...";
+		return;
+	}
+	else {
+		SizeOutNeurons = ArrSizeSloy[VallSloy - 1];
+		ArrSizeSloy[0] = ValBat * batñhMax[sloys - 1][0].sizeY * batñhMax[sloys - 1][0].sizeX;
+		localPepzetron = new Tensor(VallSloy, ArrSizeSloy, ActFunc);
+		localPepzetron->InitClassesErr();
+	}
+	SetInitTeach = true;
+
+}
+
+void CNN::InitPepzetronCNNForDirect(int VallSloy, int ArrSizeSloy[], const ActFuns ActFunc[], int InputSizeGridX, int InputSizeGridY) {
+
+	
+	if (!InitBatches(InputSizeGridX, InputSizeGridY)) {
+		cout << "Erorr Init Batches...";
+		return;
+	}
+	else {
+
+		ArrSizeSloy[0] = ValBat * batñhMax[sloys - 1][0].sizeY * batñhMax[sloys - 1][0].sizeX;
+		localPepzetron = new Tensor(VallSloy, ArrSizeSloy, ActFunc);
+	}
+	SetInitDirect = true;
+
 }
 
 
@@ -2083,23 +2129,20 @@ void CNN::StrartGradientCore(int PacketVal, double SpeedTeach, Regulizators regu
 }
 
 void CNN::StartDirectCNN(Batch* Grid, void (*set_function)(double* SetOutput), int VallSloy, const int ArrSizeSloy[], const ActFuns ActFunc[]) {
-	if (SetInit) {
-		if (!InitBatches(Grid[0].sizeX, Grid[0].sizeY)) {
-			return;
-		}
-		else {
-			SetInit = true;
-			localPepzetron = new Tensor(VallSloy, ArrSizeSloy, ActFunc);
-		}
+	if (SetInitDirect||SetInitTeach) {
+		int SizeVectOut = ValBat * batñhMax[sloys - 1][0].sizeY * batñhMax[sloys - 1][0].sizeX;
+		double* VectorOut = new double[SizeVectOut];
+		SweepBatches(Grid, Grid[0].sizeX, Grid[0].sizeY);
+		VectorSweep(batñhMax[sloys - 1], ValBat, VectorOut);
+		localPepzetron->StartDirectSession(VectorOut, set_function);
+		NullBatchSet();
+		delete[]  VectorOut;
 
 	}
-	int SizeVectOut = ValBat * batñhMax[sloys - 1][0].sizeY * batñhMax[sloys - 1][0].sizeX;
-	double* VectorOut = new double[SizeVectOut];
-	SweepBatches(Grid, Grid[0].sizeX, Grid[0].sizeY);
-	VectorSweep(batñhMax[sloys - 1], ValBat, VectorOut);
-	localPepzetron->StartDirectSession(VectorOut,set_function);
-	NullBatchSet();
-	delete[]  VectorOut;
+	else {
+		cout << "Don`t init DirectPepzetron or TeachPepzetron ...";
+		return;
+	}
 }
 
 void CNN::DirectCnnBase(DataCNN& GridData) {
@@ -2326,6 +2369,186 @@ void CNN::NullBatchSet() {
 }
 
 
+void CNN::SaveParamentsCNN(string pathCore, string pathBios) {
+	ofstream OutCore;
+	OutCore.open(pathCore);
+	if (!OutCore.is_open()) {
+		cout << "Error Open Core file...";
+		return;
+	}
+	for (int i = 0; i < sloys; i++) {
+		if (i == 0) {
+			for (int g = 0; g < chanels; g++) {
+				for (int j = 0; j < valCore[0]; j++) {
+					for (int y = 0; y < ñores[0][g][j].sizeY; y++) {
+						for (int x = 0; x < ñores[0][g][j].sizeX; x++) {
+							OutCore<<ñores[i][g][j].Core[y][x]<<"\n";
+
+
+						}
+					}
+
+				}
+			}
+
+		}
+		else {
+			for (int l = 0; l < valCore[i - 1]; l++) {
+
+				for (int j = 0; j < valCore[i]; j++) {
+					for (int y = 0; y < ñores[i][l][j].sizeY; y++) {
+						for (int x = 0; x < ñores[i][l][j].sizeX; x++) {
+							OutCore << ñores[i][l][j].Core[y][x] << "\n";
+
+						}
+					}
+
+				}
+			}
+
+		}
+
+	}
+	OutCore.close();
+	ofstream OutBios;
+	OutBios.open(pathBios);
+	if (!OutBios.is_open()) {
+		cout << "Error Open Bios file...";
+		return;
+	}
+
+	for (int j = 0; j < valCore[0]; j++) {
+		for (int y = 0; y < bios[0][j].sizeY; y++) {
+			for (int x = 0; x < bios[0][j].sizeX; x++) {
+				OutBios<<bios[0][j].bios[y][x]<<"\n";
+
+			}
+		}
+	}
+
+	for (int i = 1; i < sloys; i++) {
+
+
+		for (int l = 0; l < valCore[i]; l++) {
+
+
+
+			for (int y = 0; y < bios[i][l].sizeY; y++) {
+				for (int x = 0; x < bios[i][l].sizeX; x++) {
+					OutBios << bios[i][l].bios[y][x] << "\n";
+				}
+			}
+
+
+
+
+		}
+
+
+
+
+
+
+
+
+	}
+	OutBios.close();
+	localPepzetron->SaveParametsNeurons();
+
+}
+void CNN::LoadParamentsCNN(string pathCore, string pathBios) {
+	if (!SetInitDirect) {
+		cout << "At first init DirectPepzetron...";
+		return;
+	}
+	fstream OutCore;
+	fstream OutBios;
+	OutCore.open(pathCore);
+	OutBios.open(pathBios);
+	if (!OutCore.is_open()) {
+		cout << "Error Open Core file...";
+		return;
+	}
+	if (!OutBios.is_open()) {
+		cout << "Error Open Bios file...";
+		return;
+	}
+
+	for (int i = 0; i < sloys; i++) {
+		if (i == 0) {
+			for (int g = 0; g < chanels; g++) {
+				for (int j = 0; j < valCore[0]; j++) {
+					for (int y = 0; y < ñores[0][g][j].sizeY; y++) {
+						for (int x = 0; x < ñores[0][g][j].sizeX; x++) {
+							OutCore>> ñores[i][g][j].Core[y][x];
+
+
+						}
+					}
+
+				}
+			}
+
+		}
+		else {
+			for (int l = 0; l < valCore[i - 1]; l++) {
+
+				for (int j = 0; j < valCore[i]; j++) {
+					for (int y = 0; y < ñores[i][l][j].sizeY; y++) {
+						for (int x = 0; x < ñores[i][l][j].sizeX; x++) {
+							OutCore >> ñores[i][l][j].Core[y][x];
+
+						}
+					}
+
+				}
+			}
+
+		}
+
+	}
+
+	for (int j = 0; j < valCore[0]; j++) {
+		for (int y = 0; y < bios[0][j].sizeY; y++) {
+			for (int x = 0; x < bios[0][j].sizeX; x++) {
+				OutBios >>bios[0][j].bios[y][x];
+
+			}
+		}
+	}
+
+	for (int i = 1; i < sloys; i++) {
+
+
+		for (int l = 0; l < valCore[i]; l++) {
+
+
+
+			for (int y = 0; y < bios[i][l].sizeY; y++) {
+				for (int x = 0; x < bios[i][l].sizeX; x++) {
+					OutBios >> bios[i][l].bios[y][x];
+				}
+			}
+
+
+
+
+		}
+
+
+
+
+
+
+
+
+	}
+
+	OutCore.close();
+	OutBios.close();
+	localPepzetron->LoadParametsNeurons();
+
+}
 
 void Tsr::TestCNNModel(int chanels, int  valCore[], int sloys, int*** SizeCore, int Step, int SizeGridX, int SizeGridY) {
 	
